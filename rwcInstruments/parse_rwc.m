@@ -80,7 +80,7 @@ metas = [metas{:}];
 batches = [metas.batch];
 unique_batches = unique(batches);
 for batch_id = 1:length(unique_batches)
-    batch = unique_batches(style_id);
-    metas([metas.batch] == batch).batch_id = batch_id;
+    batch = unique_batches(batch_id);
+    [metas([metas.batch] == batch).batch_id] = deal(batch_id);
 end
 end

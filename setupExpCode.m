@@ -1,7 +1,11 @@
+% Move .expCode hidden folder
+mv('.expCode', '~')
+
+% Add expCode to path
 addpath(genpath('~/expCode'));
 addpath(genpath('~/scattering.m'))
 
-%%
+% Create experiment
 expCreate('rwcInstruments');
 rwcInstruments('addStep','scattering');
 rwcInstruments('addFactor',{'arch',{'plain'}});

@@ -13,10 +13,13 @@ system('rsync -a .expCode ~/');
 addpath(genpath('~/expCode'));
 addpath(genpath('~/scattering.m'));
 
+% Delete previous experiment
+system('rm -rf rwcInstruments');
+
 % Create experiment
 expCreate('rwcInstruments');
 rwcInstruments('addStep','scattering');
 rwcInstruments('addFactor',{'arch',{'plain'}});
-rwcInstruments('addFactor', {'batch_id','1:45'})
-rwcInstruments('addFactor',{'Q',{'8','16'}});
 rwcInstruments('addFactor',{'mu',{'1e-2','1','1e2'}});
+rwcInstruments('addFactor',{'Q',{'8','16'}});
+rwcInstruments('addFactor', {'batch_id','1:45'})

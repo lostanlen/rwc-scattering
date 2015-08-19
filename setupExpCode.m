@@ -1,4 +1,12 @@
-% Move .expCode hidden folder
+% Pull latest master of scattering.m
+cd('~/scattering.m')
+system('git pull origin master')
+cd('~/rwc-scattering')
+
+% Pull latest master of rwcInstrument project
+system('git pull origin master')
+
+% Move .expCode hidden folder to home
 movefile('.expCode', '~/')
 
 % Add expCode to path

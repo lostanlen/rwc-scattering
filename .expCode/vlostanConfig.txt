@@ -15,7 +15,7 @@ inputPath =
 % path to the code repository of the experiment
 codePath = <experimentPath>
 % path to the data repository of the experiment for stored data
-dataPath = ~/data/experiments/<experimentName>
+dataPath = ~/datasets/rwc
 % path to the data repository of the experiment for observation data (same as dataPath if left blank)
 obsPath =
 % path to backup of transfered data

@@ -10,7 +10,9 @@ system('git pull origin master');
 system('rsync -a .expCode ~/');
 
 % Add expCode to path
-addpath(genpath('~/expCode'));
+addpath(genpath('expCode'));
+
+% Add scattering.m to path
 addpath(genpath('~/scattering.m'));
 
 % Delete previous experiment
@@ -18,6 +20,7 @@ system('rm -rf rwcInstruments');
 
 % Create experiment
 expCreate('rwcInstruments');
+addpath(genpath('rwcInstruments'));
 rwcInstruments('addStep','scattering');
 rwcInstruments('addFactor',{'arch',{'plain'}});
 rwcInstruments('addFactor',{'mu',{'1e-2','1','1e2'}});

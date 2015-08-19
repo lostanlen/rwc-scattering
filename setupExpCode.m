@@ -7,7 +7,7 @@ cd('~/rwc-scattering');
 system('git pull origin master');
 
 % Move .expCode hidden folder to home
-movefile('.expCode', '~/', 'f');
+system('rsync -a .expCode ~/');
 
 % Add expCode to path
 addpath(genpath('~/expCode'));

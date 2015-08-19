@@ -1,5 +1,5 @@
 % Move .expCode hidden folder
-mv('.expCode', '~')
+movefile('.expCode', '~/')
 
 % Add expCode to path
 addpath(genpath('~/expCode'));

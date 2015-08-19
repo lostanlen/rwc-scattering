@@ -9,7 +9,7 @@ completeName = Vincent Lostanlen
 %% HOSTNAMES AND PATHS
 
 % names of the machines
-machineNames = {'ensLostanlen'}
+machineNames = {'ensLostanlen’, ‘capucine’, ’ceanothe’, ‘celosie’, ‘glaieul’, ‘lys’, ’tamaris’}
 % path to input data
 inputPath =
 % path to the code repository of the experiment

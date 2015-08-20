@@ -62,10 +62,10 @@ savefile_path = ['features/', savefile_name];
 save(savefile_path, 'batch', 'setting', 'host', 'elapsed', 'date');
 
 % Print termination message
-disp('Finished batch ', batch_id_str, 'on host', host, ...
-    ' at ', date,' with settings:');
+disp(['Finished batch ', batch_id_str, 'on host', host, ...
+    ' at ', date,' with settings:']);
 disp(setting);
-disp('Elapsed time is', elapsed);
+disp(['Elapsed time is', elapsed]);
 disp('--------------------------------------------------------------------------------');
 end
 

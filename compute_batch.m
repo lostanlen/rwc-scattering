@@ -56,7 +56,7 @@ Q_str = num2str(setting.Q,'%0.2d');
 mu_str = num2str(setting.mu,'%1.0e');
 batch_id_str = num2str(batch_id,'%0.2');
 savefile_name = ['rwcplain_Q', Q_str, '_mu', mu_str, '_batch', batch_id_str];
-savefile_path = ['storage/', savefile_name];
+savefile_path = ['features/', savefile_name];
 
 save(savefile_path, 'batch', 'setting', 'elapsed', 'date');
 end

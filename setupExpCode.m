@@ -20,7 +20,6 @@ system('rm -rf rwcInstruments');
 
 % Create experiment
 expCreate('rwcInstruments');
-addpath(genpath('rwcInstruments'));
 rwcInstruments('addStep','scattering');
 rwcInstruments('addFactor',{'arch',{'plain'}});
 rwcInstruments('addFactor',{'mu',{'1e-2','1','1e2'}});

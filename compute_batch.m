@@ -47,7 +47,8 @@ elapsed = toc();
 
 % Get host name
 pcinfo = java.net.InetAddress.getLocalHost();
-host = pcinfo.getHostName();
+host = pcinfo.getHostName(); % class is java.lang.String
+host = char(host); % convert to MATLAB char array
 
 % Get date
 date = datestr(now());

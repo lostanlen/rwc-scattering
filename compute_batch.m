@@ -53,9 +53,9 @@ host = pcinfo.getHostName();
 date = datestr(now());
 
 % Save
-Q_str = num2str(setting.Q,'%0.2d');
+Q_str = num2str(setting.Q,'%1.2d');
 mu_str = num2str(setting.mu,'%1.0e');
-batch_id_str = num2str(batch_id,'%0.2');
+batch_id_str = num2str(batch_id,'%1.2d');
 savefile_name = ['rwcplain_Q', Q_str, '_mu', mu_str, '_batch', batch_id_str];
 mkdir('features');
 savefile_path = ['features/', savefile_name];

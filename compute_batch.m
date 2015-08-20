@@ -30,6 +30,7 @@ nFiles = length(batch);
 % Measure elapsed time with tic() and toc()
 tic();
 parfor file_index = 1:nFiles
+    disp(file_index);
     % Loading
     file_meta = file_metas(file_index);
     subfolder = file_meta.subfolder;

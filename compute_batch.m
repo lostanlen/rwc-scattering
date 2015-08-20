@@ -44,6 +44,7 @@ parfor file_index = 1:nFiles
     batch(file_index).data = sc_format(S);
 end
 elapsed = toc();
+elapsed_str = num2str(elapsed,'%2.0f');
 
 % Get host name
 pcinfo = java.net.InetAddress.getLocalHost();
@@ -63,11 +64,11 @@ savefile_path = ['features/', savefile_name];
 save(savefile_path, 'batch', 'setting', 'host', 'elapsed', 'date');
 
 % Print termination message
-disp(['Finished batch ', batch_id_str, 'on host', host, ...
+disp('--------------------------------------------------------------------------------');
+disp(['Finished batch ', batch_id_str, ' on host ', host, ...
     ' at ', date,' with settings:']);
 disp(setting);
-disp(['Elapsed time is', elapsed]);
-disp('--------------------------------------------------------------------------------');
+disp(['Elapsed time is ', elapsed_str ' seconds.']);
 end
 
 

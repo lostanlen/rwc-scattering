@@ -59,7 +59,14 @@ batch_id_str = num2str(batch_id,'%1.2d');
 savefile_name = ['rwcplain_Q', Q_str, '_mu', mu_str, '_batch', batch_id_str];
 mkdir('features');
 savefile_path = ['features/', savefile_name];
-save(savefile_path, 'batch', 'setting', 'elapsed', 'date');
+save(savefile_path, 'batch', 'setting', 'host', 'elapsed', 'date');
+
+% Print termination message
+disp('Finished batch ', batch_id_str, 'on host', host, ...
+    ' at ', date,' with settings:');
+disp(setting);
+disp('Elapsed time is', elapsed);
+disp('--------------------------------------------------------------------------------');
 end
 
 

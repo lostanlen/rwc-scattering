@@ -35,7 +35,7 @@ parfor file_index = 1:nFiles
     file_meta = file_metas(file_index);
     subfolder = file_meta.subfolder;
     wavfile_name = file_meta.wavfile_name;
-    file_path = [dataPath, '/', subfolder, '/', wavfile_name];
+    file_path = ['~/datasets/rwc/', subfolder, '/', wavfile_name];
     signal = audioread_compat(file_path);
     
     % Scattering

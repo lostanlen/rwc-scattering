@@ -21,13 +21,14 @@ opts{2}.nonlinearity.name = 'modulus';
 archs = sc_setup(opts);
 
 % Parse RWC folder
-dataPath = setting.dataPath;
-file_metas = parse_rwc(dataPath);
+file_metas = parse_rwc('~/datasets/rwc');
 
 % Filter folder according to specified batch
-batch = file_metas([file_metas.batch_id] == setting.batch_id);
+batch = file_metas([file_metas.batch_id] == batch_id);
 nFiles = length(batch);
 
+% Measure elapsed time with tic() and toc()
+tic();
 parfor file_index = 1:nFiles
     % Loading
     file_meta = file_metas(file_index);
@@ -42,6 +43,22 @@ parfor file_index = 1:nFiles
     % Formatting
     batch(file_index).data = sc_format(S);
 end
+elapsed = toc();
+
+% Get host name
+pcinfo = java.net.InetAddress.getLocalHost();
+host = pcinfo.getHostName();
+
+% Get date
+date = datestr(now());
+
+Q_str = num2str(setting.Q,'%0.2d');
+mu_str = num2str(setting.mu,'%1.0e');
+batch_id_str = num2str(batch_id,'%0.2');
+savefile_name = ['rwcplain_Q', Q_str, '_mu', mu_str, '_batch', batch_id_str];
+savefile_path = ['storage/', savefile_name];
+
+save(savefile_path, 'batch', 'setting', 'elapsed', 'date');
 end
 
 

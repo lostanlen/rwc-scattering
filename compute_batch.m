@@ -5,8 +5,12 @@ opts{1}.time.max_Q = setting.Q;
 opts{1}.time.max_scale = 4410.0; % 100 ms @ 44,1 kHz
 opts{1}.time.gamma_bounds = [1 10*setting.Q]; % 10 octaves from 21 Hz to 22,050 kHz
 
-opts{1}.nonlinearity.name = 'uniform_log';
-opts{1}.nonlinearity.denominator = setting.mu;
+if isfield(setting, 'mu')
+    opts{1}.nonlinearity.name = 'uniform_log';
+    opts{1}.nonlinearity.denominator = setting.mu;
+else
+    opts{1}.nonlinarity.name = 'modulus';
+end
 
 opts{2}.time.handle = @gammatone_1d;
 opts{2}.time.sibling_mask_factor = 2.0;

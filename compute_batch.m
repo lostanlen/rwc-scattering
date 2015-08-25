@@ -59,10 +59,7 @@ host = char(host); % convert to MATLAB char array
 date = datestr(now());
 
 % Save
-Q_str = num2str(setting.Q,'%1.2d');
-mu_str = num2str(setting.mu,'%1.0e');
-batch_id_str = num2str(batch_id,'%1.2d');
-savefile_name = ['rwcplain_Q', Q_str, '_mu', mu_str, '_batch', batch_id_str];
+savefile_name = [setting2prefix(setting), num2str(batch_id,'%1.2d')];
 if ~exist('features','dir')
     mkdir('features');
 end

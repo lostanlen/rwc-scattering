@@ -12,12 +12,16 @@ else
     opts{1}.nonlinarity.name = 'modulus';
 end
 
-opts{2}.time.handle = @gammatone_1d;
-opts{2}.time.sibling_mask_factor = 2.0;
-opts{2}.time.U_log2_oversampling = 2;
-
-if ~strcmp(setting.arch, 'plain')
-    error('non-plain scattering not ready yet');
+switch setting.arch
+    case 'plain'
+        opts{2}.time.handle = @gammatone_1d;
+        opts{2}.time.sibling_mask_factor = 2.0;
+        opts{2}.time.U_log2_oversampling = 2;
+    case 'joint'
+        opts{2}.time.handle = @gammatone_1d;
+        opts{2}.time.sibling_mask_factor = 2.0;
+        opts{2}.time.U_log2_oversampling = 2;
+        opts{2}.gamma.handle = @morlet_1d;
 end
 
 opts{2}.nonlinearity.name = 'modulus';

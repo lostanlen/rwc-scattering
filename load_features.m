@@ -6,7 +6,7 @@ batch_features = cell(nBatches,1);
 % Load batches
 for batch_id = 1:nBatches
     disp(['loading batch #', int2str(batch_id)])
-    batch_id_str = num2str(batch_id,'%1.2d');
+    batch_id_str = num2str(batch_id, '%1.2d');
     file_name = [prefix, batch_id_str];
     file_path = ['features/', file_name];
     load(file_path);

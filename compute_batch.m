@@ -52,7 +52,7 @@ if strcmp(setting.arch, 'mfcc')
         wavfile_name = file_meta.wavfile_name;
         file_path = ['~/datasets/rwc/', subfolder, '/', wavfile_name];
         [signal, sample_rate] = audioread_compat(file_path);
-        batch(file_index).data = melfcc(signal, sample_rate);
+        batch(file_index).data = melfcc(signal, sample_rate).';
         batch(file_index).setting = setting;
     end
 else

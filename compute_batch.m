@@ -58,10 +58,10 @@ parfor file_index = 1:nFiles
 
     % Formatting
     batch(file_index).data = sc_format(S);
-    barch(file_index).setting = setting;
+    batch(file_index).setting = setting;
 end
 elapsed = toc();
-elapsed_str = num2str(elapsed,'%2.0f');
+elapsed_str = num2str(elapsed, '%2.0f');
 
 % Get host name
 pcinfo = java.net.InetAddress.getLocalHost();
@@ -72,7 +72,7 @@ host = char(host); % convert to MATLAB char array
 date = datestr(now());
 
 % Save
-savefile_name = [setting2prefix(setting), num2str(batch_id,'%1.2d')];
+savefile_name = [setting2prefix(setting), '_batch', num2str(batch_id,'%1.2d')];
 if ~exist('features','dir')
     mkdir('features');
 end

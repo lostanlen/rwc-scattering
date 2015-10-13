@@ -1,10 +1,4 @@
 function average_distances = compute_average_distances(features)
-%% Transpose data
-nFiles = length(features);
-for file_id = 1:nFiles
-    features(file_id).data = features(file_id).data.';
-end
-
 %% Concatenate data into a matrix
 data_matrix = [features.data];
 pdists = pdist(data_matrix.');
@@ -25,37 +19,37 @@ for instrument_id = 1:nInstruments
 end
 
 %%
-nFeatures = length(features);
+nFiles = length(features);
 batch_ids = [features.batch_id];
 instrument_ids = [features.instrument_id];
 nuance_ids = [features.nuance_id];
 pitch_ids = [features.pitch_id];
 style_ids = [features.style_id];
 
-for feature_id = 1:nFeatures
-    batch_id = batch_ids(feature_id);
-    instrument_id = instrument_ids(feature_id);
-    nuance_id = nuance_ids(feature_id);
-    pitch_id = pitch_ids(feature_id);
-    style_id = style_ids(feature_id);
+for file_id = 1:nFiles
+    batch_id = batch_ids(file_id);
+    instrument_id = instrument_ids(file_id);
+    nuance_id = nuance_ids(file_id);
+    pitch_id = pitch_ids(file_id);
+    style_id = style_ids(file_id);
     uppitch_id = find((batch_ids==batch_id) & ...
         (nuance_ids==nuance_id) & (pitch_ids==(pitch_id+1)));
     if (uppitch_id~=0)
-        features(feature_id).pitch_dist = ...
-            norm(features(uppitch_id).data - features(feature_id).data);
+        features(file_id).pitch_dist = ...
+            norm(features(uppitch_id).data - features(file_id).data);
     end
     upnuance_id = find((batch_ids==batch_id) & ...
         (nuance_ids==(nuance_id+1)) & (pitch_ids==pitch_id));
     if (upnuance_id~=0)
-        features(feature_id).nuance_dist = ...
-            norm(features(upnuance_id).data - features(feature_id).data);
+        features(file_id).nuance_dist = ...
+            norm(features(upnuance_id).data - features(file_id).data);
     end
     nextstyle_id = find((style_ids==(1+mod(style_id+1-1,3))) & ...
         (nuance_ids==nuance_id) & (pitch_ids==pitch_id) & ...
         (instrument_ids==instrument_id));
     if (nextstyle_id~=0)
-        features(feature_id).style_dist = ...
-            norm(features(nextstyle_id).data - features(feature_id).data);
+        features(file_id).style_dist = ...
+            norm(features(nextstyle_id).data - features(file_id).data);
     end
 end
 

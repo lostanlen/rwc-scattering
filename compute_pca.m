@@ -9,12 +9,7 @@ X = [features.data].';
 [coeff, score, latent, tsquared, explained, Xmean] = pca(X);
 
 % Generate savefile name
-switch setting.arch
-    case 'plain'
-        Q_str = num2str(setting.Q, '%1.2d');
-        mu_str = num2str(setting.mu, '%1.0e');
-        savefile_name = ['rwcplainPCA_Q', Q_str, '_mu', mu_str];
-end
+prefix = ['PCA_', setting2prefix(setting)];
 
 % Get host name
 pcinfo = java.net.InetAddress.getLocalHost();

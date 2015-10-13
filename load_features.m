@@ -1,4 +1,7 @@
-function features = load_features(setting)
+function features = load_features(setting, summarization_str)
+if nargin<2
+    summarization_str = 'mean';
+end
 % Generate prefix string
 prefix = setting2prefix(setting);
 nBatches = 45;
@@ -7,9 +10,10 @@ batch_features = cell(nBatches,1);
 for batch_id = 1:nBatches
     disp(['loading batch #', int2str(batch_id)])
     batch_id_str = num2str(batch_id, '%1.2d');
-    file_name = [prefix, batch_id_str];
-    file_path = ['features/', file_name];
+    file_name = [prefix, '_batch', batch_id_str];
+    file_path = [prefix, '/', file_name];
     load(file_path);
+    batch = summarize_batch(batch, summarization_str);
     batch_features{batch_id} = batch;
 end
 % Convert cell array to vector

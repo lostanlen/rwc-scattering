@@ -43,25 +43,30 @@ batch = file_metas([file_metas.batch_id] == batch_id);
 nFiles = length(batch);
 
 % Measure elapsed time with tic() and toc()
-arch_str = setting.arch;
 tic();
-parfor file_index = 1:nFiles
-    % Loading
-    file_meta = file_metas(file_index);
-    subfolder = file_meta.subfolder;
-    wavfile_name = file_meta.wavfile_name;
-    file_path = ['~/datasets/rwc/', subfolder, '/', wavfile_name];
-    [signal, sample_rate] = audioread_compat(file_path);
-    if strcmp(arch_str, 'mfcc')
-        % MFCC features
+if strcmp(setting.arch, 'mfcc')
+    parfor file_index = 1:nFiles
+        % Loading
+        file_meta = file_metas(file_index);
+        subfolder = file_meta.subfolder;
+        wavfile_name = file_meta.wavfile_name;
+        file_path = ['~/datasets/rwc/', subfolder, '/', wavfile_name];
+        [signal, sample_rate] = audioread_compat(file_path);
         batch(file_index).data = melfcc(signal, sample_rate);
-    else
-        % Scattering
+        batch(file_index).setting = setting;
+    end
+else
+    parfor file_index = 1:nFiles
+        file_meta = file_metas(file_index);
+        subfolder = file_meta.subfolder;
+        wavfile_name = file_meta.wavfile_name;
+        file_path = ['~/datasets/rwc/', subfolder, '/', wavfile_name];
+        [signal, sample_rate] = audioread_compat(file_path);
         S = sc_propagate(signal, archs);
         % Formatting
         batch(file_index).data = sc_format(S);
+        batch(file_index).setting = setting;
     end
-    batch(file_index).setting = setting;
 end
 elapsed = toc();
 elapsed_str = num2str(elapsed, '%2.0f');

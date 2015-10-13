@@ -43,6 +43,7 @@ batch = file_metas([file_metas.batch_id] == batch_id);
 nFiles = length(batch);
 
 % Measure elapsed time with tic() and toc()
+arch_str = setting.arch;
 tic();
 parfor file_index = 1:nFiles
     % Loading
@@ -51,7 +52,7 @@ parfor file_index = 1:nFiles
     wavfile_name = file_meta.wavfile_name;
     file_path = ['~/datasets/rwc/', subfolder, '/', wavfile_name];
     [signal, sample_rate] = audioread_compat(file_path);
-    if strcmp(setting.arch, 'mfcc')
+    if strcmp(arch_str, 'mfcc')
         % MFCC features
         batch(file_index).data = melfcc(signal, sample_rate);
     else

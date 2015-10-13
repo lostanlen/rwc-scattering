@@ -10,7 +10,6 @@ switch setting.wavelet
         opts{1}.time.handle = @morlet_1d;
     case 'gammatone'
         opts{1}.time.handle = @gammatone_1d;
-    end
 end
 
 % First nonlinearity

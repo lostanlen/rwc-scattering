@@ -7,5 +7,4 @@ if ~strcmp(setting.arch, 'mfcc')
         prefix = [prefix, '_mu', mu_str];
     end
 end
-prefix = [prefix, '_batch'];
 end

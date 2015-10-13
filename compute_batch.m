@@ -1,39 +1,39 @@
 function batch = compute_batch(batch_id, setting)
-% Build scattering filter banks
-% First order
-opts{1}.time.T = 16384; % 370 ms @ 44,1 kHz
-opts{1}.time.max_Q = setting.Q;
-opts{1}.time.max_scale = 4410.0; % 100 ms @ 44,1 kHz
-opts{1}.time.gamma_bounds = [1 10*setting.Q]; % 10 octaves from 21 Hz to 22,050 kHz
-switch setting.wavelet
-    case 'morlet'
-        opts{1}.time.handle = @morlet_1d;
-    case 'gammatone'
-        opts{1}.time.handle = @gammatone_1d;
+if ~strcmp(setting.arch, 'mfcc')
+    % Build scattering filter banks
+    % First order
+    % 370 ms @ 44,1 kHz
+    opts{1}.time.T = 16384;
+    opts{1}.time.max_Q = setting.Q;
+    % 100 ms @ 44,1 kHz
+    opts{1}.time.max_scale = 4410.0;
+    % 10 octaves from 21 Hz to 22,050 kHz
+    opts{1}.time.gamma_bounds = [1 10*setting.Q];
+    switch setting.wavelet
+        case 'morlet'
+            opts{1}.time.handle = @morlet_1d;
+        case 'gammatone'
+            opts{1}.time.handle = @gammatone_1d;
+    end
+    % First nonlinearity
+    if isfield(setting, 'mu')
+        opts{1}.nonlinearity.name = 'uniform_log';
+        opts{1}.nonlinearity.denominator = setting.mu;
+    else
+        opts{1}.nonlinarity.name = 'modulus';
+    end
+    % Second order
+    opts{2}.time.handle = opts{1}.time.handle;
+    opts{2}.time.sibling_mask_factor = 2.0;
+    opts{2}.time.U_log2_oversampling = 2;
+    % Joint scattering
+    if strcmp(setting.arch, 'joint')
+        opts{2}.gamma.handle = @morlet_1d;
+    end
+    % Second nonlinearity
+    opts{2}.nonlinearity.name = 'modulus';
+    archs = sc_setup(opts);
 end
-
-% First nonlinearity
-if isfield(setting, 'mu')
-    opts{1}.nonlinearity.name = 'uniform_log';
-    opts{1}.nonlinearity.denominator = setting.mu;
-else
-    opts{1}.nonlinarity.name = 'modulus';
-end
-
-% Second order
-opts{2}.time.handle = opts{1}.time.handle;
-opts{2}.time.sibling_mask_factor = 2.0;
-opts{2}.time.U_log2_oversampling = 2;
-
-% Joint scattering
-if strcmp(setting.arch, 'joint')
-    opts{2}.gamma.handle = @morlet_1d;
-end
-
-% Second nonlinearity
-opts{2}.nonlinearity.name = 'modulus';
-
-archs = sc_setup(opts);
 
 % Parse RWC folder
 file_metas = parse_rwc('~/datasets/rwc');
@@ -50,13 +50,16 @@ parfor file_index = 1:nFiles
     subfolder = file_meta.subfolder;
     wavfile_name = file_meta.wavfile_name;
     file_path = ['~/datasets/rwc/', subfolder, '/', wavfile_name];
-    signal = audioread_compat(file_path);
-
-    % Scattering
-    S = sc_propagate(signal, archs);
-
-    % Formatting
-    batch(file_index).data = sc_format(S);
+    [signal, sample_rate] = audioread_compat(file_path);
+    if strcmp(setting.arch, 'mfcc')
+        % MFCC features
+        batch(file_index).data = melfcc(signal, sample_rate);
+    else
+        % Scattering
+        S = sc_propagate(signal, archs);
+        % Formatting
+        batch(file_index).data = sc_format(S);
+    end
     batch(file_index).setting = setting;
 end
 elapsed = toc();

@@ -1,10 +1,19 @@
 function batch = compute_batch(batch_id, setting)
 % Build scattering filter banks
+% First order
 opts{1}.time.T = 16384; % 370 ms @ 44,1 kHz
 opts{1}.time.max_Q = setting.Q;
 opts{1}.time.max_scale = 4410.0; % 100 ms @ 44,1 kHz
 opts{1}.time.gamma_bounds = [1 10*setting.Q]; % 10 octaves from 21 Hz to 22,050 kHz
+switch setting.wavelet
+    case 'morlet'
+        opts{1}.time.handle = @morlet_1d;
+    case 'gammatone'
+        opts{1}.time.handle = @gammatone_1d;
+    end
+end
 
+% First nonlinearity
 if isfield(setting, 'mu')
     opts{1}.nonlinearity.name = 'uniform_log';
     opts{1}.nonlinearity.denominator = setting.mu;
@@ -12,18 +21,17 @@ else
     opts{1}.nonlinarity.name = 'modulus';
 end
 
-switch setting.arch
-    case 'plain'
-        opts{2}.time.handle = @gammatone_1d;
-        opts{2}.time.sibling_mask_factor = 2.0;
-        opts{2}.time.U_log2_oversampling = 2;
-    case 'joint'
-        opts{2}.time.handle = @gammatone_1d;
-        opts{2}.time.sibling_mask_factor = 2.0;
-        opts{2}.time.U_log2_oversampling = 2;
-        opts{2}.gamma.handle = @morlet_1d;
+% Second order
+opts{2}.time.handle = opts{1}.time.handle
+opts{2}.time.sibling_mask_factor = 2.0;
+opts{2}.time.U_log2_oversampling = 2;
+
+% Joint scattering
+if strcmp(setting.arch, 'joint')
+    opts{2}.gamma.handle = @morlet_1d;
 end
 
+% Second nonlinearity
 opts{2}.nonlinearity.name = 'modulus';
 
 archs = sc_setup(opts);
@@ -44,12 +52,13 @@ parfor file_index = 1:nFiles
     wavfile_name = file_meta.wavfile_name;
     file_path = ['~/datasets/rwc/', subfolder, '/', wavfile_name];
     signal = audioread_compat(file_path);
-    
+
     % Scattering
     S = sc_propagate(signal, archs);
-    
+
     % Formatting
     batch(file_index).data = sc_format(S);
+    barch(file_index).setting = setting;
 end
 elapsed = toc();
 elapsed_str = num2str(elapsed,'%2.0f');
@@ -77,5 +86,3 @@ disp(['Finished batch ', batch_id_str, ' on host ', host, ...
 disp(setting);
 disp(['Elapsed time is ', elapsed_str ' seconds.']);
 end
-
-

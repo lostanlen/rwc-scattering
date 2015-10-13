@@ -21,7 +21,7 @@ else
 end
 
 % Second order
-opts{2}.time.handle = opts{1}.time.handle
+opts{2}.time.handle = opts{1}.time.handle;
 opts{2}.time.sibling_mask_factor = 2.0;
 opts{2}.time.U_log2_oversampling = 2;
 

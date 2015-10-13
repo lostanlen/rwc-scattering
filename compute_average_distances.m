@@ -1,10 +1,15 @@
 function average_distances = compute_average_distances(features)
 %% Concatenate data into a matrix
+disp('Computing all pairwise distances...');
+tic();
 data_matrix = [features.data];
 pdists = pdist(data_matrix.');
 mean_pdists = mean(pdists);
+toc();
 
 %%
+disp('Computing distances within instruments...');
+tic();
 instrument_ids = [features.instrument_id];
 nInstruments = max(instrument_ids);
 mean_instrument_pdists = zeros(nInstruments, 1);
@@ -17,7 +22,7 @@ for instrument_id = 1:nInstruments
     mean_instrument_pdists(instrument_id) = mean(instrument_pdists);
     std_instrument_pdists(instrument_id) = std(instrument_pdists);
 end
-
+toc();
 %%
 nFiles = length(features);
 batch_ids = [features.batch_id];
@@ -26,6 +31,8 @@ nuance_ids = [features.nuance_id];
 pitch_ids = [features.pitch_id];
 style_ids = [features.style_id];
 
+disp('Computing distances related to pitch, nuance, and style...');
+tic();
 for file_id = 1:nFiles
     batch_id = batch_ids(file_id);
     instrument_id = instrument_ids(file_id);
@@ -52,7 +59,13 @@ for file_id = 1:nFiles
             norm(features(nextstyle_id).data - features(file_id).data);
     end
 end
-
+toc();
 %%
 mean_pitch_dist = mean([features.pitch_dist]);
 mean_nuance_dist = mean([features.nuance_dist]);
+
+%%
+for instrument_id = 1:nInstruments
+    mean_pitch_dist_per_instr(instrument_id) = ...
+        mean([features([features.instrument_id]==instrument_id).pitch_dist]);
+end

@@ -71,7 +71,8 @@ host = char(host); % convert to MATLAB char array
 date = datestr(now());
 
 % Save
-savefile_name = [setting2prefix(setting), '_batch', num2str(batch_id,'%1.2d')];
+batch_id_str = num2str(batch_id, '%1.2d');
+savefile_name = [setting2prefix(setting), '_batch', batch_id_str];
 if ~exist('features','dir')
     mkdir('features');
 end

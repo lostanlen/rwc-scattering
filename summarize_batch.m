@@ -5,7 +5,8 @@ switch summarization_str
     case 'none'
     case 'mean'
         for file_id = 1:nFiles_in_batch
-            summarized_batch(file_id).data = mean(batch(file_id).data, 2);
+            summarized_batch(file_id).data = ...
+                mean(batch(file_id).data(:,2:6), 2);
         end
     case 'max'
         for file_id = 1:nFiles_in_batch
@@ -13,4 +14,3 @@ switch summarization_str
         end
 end
 end
-

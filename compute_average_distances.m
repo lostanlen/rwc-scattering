@@ -70,6 +70,7 @@ toc();
 %%
 mean_pitch_dist = mean([features.pitch_dist]);
 mean_nuance_dist = mean([features.nuance_dist]);
+mean_style_dist = mean([features.style_dist]);
 
 %%
 for instrument_id = 1:nInstruments

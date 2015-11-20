@@ -52,7 +52,9 @@ if strcmp(setting.arch, 'mfcc')
         wavfile_name = file_meta.wavfile_name;
         file_path = ['~/datasets/rwc/', subfolder, '/', wavfile_name];
         [signal, sample_rate] = audioread_compat(file_path);
-        batch(file_index).data = melfcc(signal, sample_rate);
+        mfcc = melfcc(signal, sample_rate);
+        % We remove the first line, which corresponds to energy coefficient
+        batch(file_index).data = mfcc(2:end,:);
         batch(file_index).setting = setting;
     end
 else

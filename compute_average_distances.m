@@ -1,4 +1,4 @@
-function dist_summary = compute_average_distances(features, dist)
+function [summary,features] = compute_average_distances(features, dist)
 if nargin < 2
     dist = 'cosine';
 end

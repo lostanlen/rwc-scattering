@@ -13,8 +13,8 @@ for batch_id = 1:nBatches
     file_name = [prefix, '_batch', batch_id_str];
     file_path = [prefix, '/', file_name];
     load(file_path);
-    batch = summarize_batch(batch, summarization_str);
-    batch_features{batch_id} = batch;
+    rwcbatch = summarize_batch(rwcbatch, summarization_str);
+    batch_features{batch_id} = rwcbatch;
 end
 % Convert cell array to vector
 features = [batch_features{:}];

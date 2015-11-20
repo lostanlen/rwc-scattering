@@ -1,7 +1,4 @@
 function features = load_features(setting, summarization_str)
-if nargin<2
-    summarization_str = 'mean';
-end
 % Generate prefix string
 prefix = setting2prefix(setting);
 nBatches = 45;

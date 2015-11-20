@@ -72,7 +72,13 @@ else
         signal = audioread_compat(file_path);
         S = sc_propagate(signal, archs);
         % Formatting
-        rwcbatch(file_index).data = sc_format(S);
+        layers = 2:3;
+        formatted_layers = cell(length(layers),1);
+        for layer_index = layers
+            formatted_layers{layer_index} = ...
+            format_layer(S{layer_index}, spatial_subscripts);
+        end
+        rwcbatch(file_index).data = [formatted_layers{:}].';
         rwcbatch(file_index).setting = setting;
     end
 end

@@ -1,9 +1,13 @@
-function average_distances = compute_average_distances(features)
+function dist_summary = compute_average_distances(features, dist)
+if nargin < 2
+    dist = 'cosine';
+end
+
 %% Concatenate data into a matrix
 disp('Computing all pairwise distances...');
 tic();
 data_matrix = [features.data];
-pdists = pdist(data_matrix.');
+pdists = pdist(data_matrix.', dist);
 mean_pdists = mean(pdists);
 toc();
 
@@ -18,7 +22,7 @@ for instrument_id = 1:nInstruments
     instrument_mask = (instrument_ids==instrument_id);
     instrument_features = features(instrument_mask);
     instrument_data = [instrument_features.data];
-    instrument_pdists = pdist(instrument_data.');
+    instrument_pdists = pdist(instrument_data.', dist);
     mean_instrument_pdists(instrument_id) = mean(instrument_pdists);
     std_instrument_pdists(instrument_id) = std(instrument_pdists);
 end
@@ -42,21 +46,24 @@ for file_id = 1:nFiles
     uppitch_id = find((batch_ids==batch_id) & ...
         (nuance_ids==nuance_id) & (pitch_ids==(pitch_id+1)));
     if (uppitch_id~=0)
-        features(file_id).pitch_dist = ...
-            norm(features(uppitch_id).data - features(file_id).data);
+        x = features(uppitch_id).data;
+        y = features(file_id).data;
+        features(file_id).pitch_dist = pdist(cat(1, x, y), dist);
     end
     upnuance_id = find((batch_ids==batch_id) & ...
         (nuance_ids==(nuance_id+1)) & (pitch_ids==pitch_id));
     if (upnuance_id~=0)
-        features(file_id).nuance_dist = ...
-            norm(features(upnuance_id).data - features(file_id).data);
+        x = features(upnuance_id).data;
+        y = features(file_id).data;
+        features(file_id).nuance_dist = pdist(cat(1, x, y), dist);
     end
     nextstyle_id = find((style_ids==(1+mod(style_id+1-1,3))) & ...
         (nuance_ids==nuance_id) & (pitch_ids==pitch_id) & ...
         (instrument_ids==instrument_id));
     if (nextstyle_id~=0)
-        features(file_id).style_dist = ...
-            norm(features(nextstyle_id).data - features(file_id).data);
+        x = features(nextstyle_id).data;
+        y = features(file_id).data;
+        features(file_id).style_dist = pdist(cat(1, x, y), dist);
     end
 end
 toc();

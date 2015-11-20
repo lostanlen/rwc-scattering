@@ -45,25 +45,25 @@ for file_id = 1:nFiles
     style_id = style_ids(file_id);
     uppitch_id = find((batch_ids==batch_id) & ...
         (nuance_ids==nuance_id) & (pitch_ids==(pitch_id+1)));
-    if (uppitch_id~=0)
+    if ~isempty(uppitch_id)
         x = features(uppitch_id).data;
         y = features(file_id).data;
-        features(file_id).pitch_dist = pdist(cat(1, x, y), dist);
+        features(file_id).pitch_dist = pdist(cat(1, x', y'), dist);
     end
     upnuance_id = find((batch_ids==batch_id) & ...
         (nuance_ids==(nuance_id+1)) & (pitch_ids==pitch_id));
-    if (upnuance_id~=0)
+    if ~isempty(upnuance_id)
         x = features(upnuance_id).data;
         y = features(file_id).data;
-        features(file_id).nuance_dist = pdist(cat(1, x, y), dist);
+        features(file_id).nuance_dist = pdist(cat(1, x', y'), dist);
     end
     nextstyle_id = find((style_ids==(1+mod(style_id+1-1,3))) & ...
         (nuance_ids==nuance_id) & (pitch_ids==pitch_id) & ...
         (instrument_ids==instrument_id));
-    if (nextstyle_id~=0)
+    if ~isempty(nextstyle_id)
         x = features(nextstyle_id).data;
         y = features(file_id).data;
-        features(file_id).style_dist = pdist(cat(1, x, y), dist);
+        features(file_id).style_dist = pdist(cat(1, x', y'), dist);
     end
 end
 toc();

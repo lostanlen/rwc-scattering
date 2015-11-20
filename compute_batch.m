@@ -9,12 +9,8 @@ if ~strcmp(setting.arch, 'mfcc')
     opts{1}.time.max_scale = 4410.0;
     % 10 octaves from 21 Hz to 22,050 kHz
     opts{1}.time.gamma_bounds = [1 10*setting.Q];
-    switch setting.wavelet
-        case 'morlet'
-            opts{1}.time.handle = @morlet_1d;
-        case 'gammatone'
-            opts{1}.time.handle = @gammatone_1d;
-    end
+    % Gammatone wavelet
+    opts{1}.time.handle = @gammatone_1d;
     % First nonlinearity
     if isfield(setting, 'mu')
         opts{1}.nonlinearity.name = 'uniform_log';
@@ -23,15 +19,25 @@ if ~strcmp(setting.arch, 'mfcc')
         opts{1}.nonlinarity.name = 'modulus';
     end
     % Second order
-    opts{2}.time.handle = opts{1}.time.handle;
+    opts{2}.time.handle = @gammatone_1d;
     opts{2}.time.sibling_mask_factor = 2.0;
     opts{2}.time.U_log2_oversampling = 2;
     % Joint scattering
     if strcmp(setting.arch, 'joint')
+        opts{2}.gamma = struct();
+    end
+    % Spiral scattering
+    if strcmp(setting.arch, 'spiral')
         opts{2}.gamma.handle = @morlet_1d;
+        opts{2}.j.handle= @finitediff_1d;
     end
     % Second nonlinearity
     opts{2}.nonlinearity.name = 'modulus';
+    archs = sc_setup(opts);
+    % Frequency transposition invariance
+    opts{3}.invariants.time.invariance = 'maxpooled';
+    opts{3}.invariants.gamma.invariance = 'summed';
+    % Setup architectures
     archs = sc_setup(opts);
 end
 

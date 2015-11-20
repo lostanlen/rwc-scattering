@@ -54,8 +54,8 @@ if strcmp(setting.arch, 'mfcc')
         [signal, sample_rate] = audioread_compat(file_path);
         mfcc = melfcc(signal, sample_rate);
         % We remove the first line, which corresponds to energy coefficient
-        batch(file_index).data = mfcc(2:end,:);
-        batch(file_index).setting = setting;
+        rwcbatch(file_index).data = mfcc(2:end,:);
+        rwcbatch(file_index).setting = setting;
     end
 else
     parfor file_index = 1:nFiles
@@ -66,8 +66,8 @@ else
         signal = audioread_compat(file_path);
         S = sc_propagate(signal, archs);
         % Formatting
-        batch(file_index).data = sc_format(S);
-        batch(file_index).setting = setting;
+        rwcbatch(file_index).data = sc_format(S);
+        rwcbatch(file_index).setting = setting;
     end
 end
 elapsed = toc();
@@ -88,7 +88,7 @@ if ~exist('features','dir')
     mkdir('features');
 end
 savefile_path = ['features/', savefile_name];
-save(savefile_path, 'batch', 'setting', 'host', 'elapsed', 'date');
+save(savefile_path, 'rwcbatch', 'setting', 'host', 'elapsed', 'date');
 
 % Print termination message
 disp('--------------------------------------------------------------------------------');

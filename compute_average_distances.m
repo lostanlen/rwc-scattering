@@ -73,6 +73,9 @@ mean_nuance_dist = mean([features.nuance_dist]);
 mean_style_dist = mean([features.style_dist]);
 
 %%
+mean_pitch_dist_per_instr = zeros(1, nInstruments);
+mean_nuance_dist_per_instr = zeros(1, nInstruments);
+mean_style_dist_per_instr = zeros(1, nInstruments);
 for instrument_id = 1:nInstruments
     mean_pitch_dist_per_instr(instrument_id) = ...
         mean([features([features.instrument_id]==instrument_id).pitch_dist]);

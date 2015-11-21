@@ -84,12 +84,13 @@ end
 
 %%
 summary.dist = dist;
-summary.mean_pitch_dist = mean_pitch_dist;
-summary.mean_nuance_dist = mean_nuance_dist;
-summary.mean_style_dist = mean_style_dist;
-summary.mean_pitch_dist_per_instr = mean_pitch_dist_per_instr;
-summary.mean_nuance_dist_per_instr = mean_nuance_dist_per_instr;
-summary.mean_style_dist_per_instr = mean_style_dist_per_instr;
+summary.mean_absdist = mean_pdists;
+summary.mean_pitch_reldist = mean_pitch_dist / mean_pdists;
+summary.mean_nuance_reldist = mean_nuance_dist / mean_pdists;
+summary.mean_style_reldist = mean_style_dist / mean_pdists;
+summary.mean_pitch_reldist_per_instr = mean_pitch_dist_per_instr/ mean_pdists;
+summary.mean_nuance_reldist_per_instr = mean_nuance_dist_per_instr;
+summary.mean_style_reldist_per_instr = mean_style_dist_per_instr / mean_pdists;
 summary.setting = setting;
 
 %% Save summary

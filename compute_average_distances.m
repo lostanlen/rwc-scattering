@@ -142,9 +142,13 @@ summary.nuance_reldist_length = length_nuance_dist;
 summary.style_reldist_mean = mean_style_dist / pdists_mean;
 summary.style_reldist_std = std_style_dist / pdists_mean;
 summary.style_reldist_length = length_style_dist;
-summary.withininstrument_reldist_mean = mean_instrument_dist / pdists_mean;
-summary.withininstrument_reldist_var = var_instrument_dist / pdists_mean;
-summary.withininstrument_reldist_length = length_instrument_dist;
+summary.withininstrument_reldist_means = mean_instrument_dist / pdists_mean;
+summary.withininstrument_reldist_stds = std_instrument_dist / pdists_mean;
+summary.withininstrument_reldist_lengths = length_instrument_dist;
+summary.withininstrument_reldist_globalmean = ...
+    mean(summary.withininstrument_reldist_means);
+summary.withininstrument_reldist_globalstd ...
+    mean(summary.withininstrument_reldist_stds);
 summary.setting = setting;
 
 %% Save summary

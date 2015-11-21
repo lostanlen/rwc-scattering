@@ -18,16 +18,17 @@ disp('Computing distances within instruments...');
 tic();
 instrument_ids = [features.instrument_id];
 nInstruments = max(instrument_ids);
-mean_instrument_pdists = zeros(nInstruments, 1);
-std_instrument_pdists = zeros(nInstruments, 1);
+mean_instrument_dist = zeros(nInstruments, 1);
+std_instrument_dist = zeros(nInstruments, 1);
+length_instrument_dist = zeros(nInstruments, 1);
 for instrument_id = 1:nInstruments
     instrument_mask = (instrument_ids==instrument_id);
     instrument_features = features(instrument_mask);
     instrument_data = [instrument_features.data];
     instrument_pdists = pdist(instrument_data.', dist);
-    mean_instrument_pdists(instrument_id) = mean(instrument_pdists);
-    std_instrument_pdists(instrument_id) = std(instrument_pdists);
-    length_instrument_pdists(instrument_id) = length(instrument_pdists);
+    mean_instrument_dist(instrument_id) = mean(instrument_pdists);
+    std_instrument_dist(instrument_id) = std(instrument_pdists);
+    length_instrument_dist(instrument_id) = length(instrument_pdists);
 end
 toc();
 %%
@@ -141,6 +142,9 @@ summary.nuance_reldist_length = length_nuance_dist;
 summary.style_reldist_mean = mean_style_dist / pdists_mean;
 summary.style_reldist_std = std_style_dist / pdists_mean;
 summary.style_reldist_length = length_style_dist;
+summary.withininstrument_reldist_mean = mean_instrument_dist / pdists_mean;
+summary.withininstrument_reldist_var = var_instrument_dist / pdists_mean;
+summary.withininstrument_reldist_length = length_instrument_dist;
 summary.setting = setting;
 
 %% Save summary

@@ -37,7 +37,7 @@ else
         file_path = ['~/datasets/rwc/', subfolder, '/', wavfile_name];
         signal = audioread_compat(file_path);
         if length(signal)<N
-            signal = [signal, zeros(N - length(signal),1)];
+            signal = cat(1, signal, zeros(N - length(signal), 1));
         else
             signal = signal(1:N);
         end

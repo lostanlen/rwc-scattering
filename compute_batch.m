@@ -22,7 +22,9 @@ if strcmp(setting.arch, 'mfcc')
         [signal, sample_rate] = audioread_compat(file_path);
         mfcc = melfcc(signal, sample_rate);
         % We remove the first line, which corresponds to energy coefficient
-        rwcbatch(file_index).data = mfcc(2:end,:);
+        data = mfcc(2:end, :);
+        rwcbatch(file_index).signal = signal;
+        rwcbatch(file_index).data = data;
         rwcbatch(file_index).setting = setting;
     end
 else
@@ -35,7 +37,7 @@ else
         file_path = ['~/datasets/rwc/', subfolder, '/', wavfile_name];
         signal = audioread_compat(file_path);
         signal = signal(1:65536);
-        [S,U] = sc_propagate(signal, archs);
+        S = sc_propagate(signal, archs);
         % Formatting
         layers = 2:3;
         formatted_layers = cell(length(layers),1);
@@ -43,6 +45,7 @@ else
             formatted_layers{layer_index} = format_layer(S{layer_index}, 1);
         end
         data = [formatted_layers{:}].';
+        rwcbatch(file_index).signal = signal;
         rwcbatch(file_index).data = data;
         rwcbatch(file_index).setting = setting;
     end

@@ -1,6 +1,7 @@
 function batch = compute_batch(batch_id, setting)
 if ~strcmp(setting.arch, 'mfcc')
     archs = setup_scattering(setting);
+    N = 131072;
 end
 
 % Parse RWC folder
@@ -35,7 +36,11 @@ else
         wavfile_name = file_meta.wavfile_name;
         file_path = ['~/datasets/rwc/', subfolder, '/', wavfile_name];
         signal = audioread_compat(file_path);
-        signal = signal(1:65536);
+        if length(signal)<N
+            signal = [signal, zeros(N - length(signal),1)];
+        else
+            signal = signal(1:N);
+        end
         S = sc_propagate(signal, archs);
         % Formatting
         layers = 2:3;

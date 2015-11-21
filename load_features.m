@@ -7,7 +7,7 @@ batch_features = cell(nBatches,1);
 for batch_id = 1:nBatches
     disp(['loading batch #', int2str(batch_id)])
     batch_id_str = num2str(batch_id, '%1.2d');
-    file_name = [prefix, '_batch', batch_id_str];
+    file_name = ['batch', batch_id_str];
     file_path = [prefix, '/', file_name];
     load(file_path);
     rwcbatch = summarize_batch(rwcbatch, summarization_str);

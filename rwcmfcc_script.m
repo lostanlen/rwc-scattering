@@ -10,4 +10,4 @@ setting.arch = 'mfcc';
 features = load_features(setting, 'max');
 
 %%
-summary = compute_average_distances(features);
+summary = compute_average_distances(setting, features);

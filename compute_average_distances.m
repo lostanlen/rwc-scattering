@@ -1,4 +1,4 @@
-function [summary,features] = compute_average_distances(features, dist)
+function [summary,features] = compute_average_distances(summary, features, dist)
 if nargin < 2
     dist = 'cosine';
 end
@@ -90,3 +90,13 @@ summary.mean_style_dist = mean_style_dist;
 summary.mean_pitch_dist_per_instr = mean_pitch_dist_per_instr;
 summary.mean_nuance_dist_per_instr = mean_nuance_dist_per_instr;
 summary.mean_style_dist_per_instr = mean_style_dist_per_instr;
+summary.setting = setting;
+
+%% Save summary
+prefix = setting2prefix(setting);
+if ~exist(prefix,'dir')
+    mkdir(prefix);
+end
+filename = [prefix, '_summary'];
+filepath = [prefix, '/', filename];
+save(filepath);

@@ -30,7 +30,6 @@ if strcmp(setting.arch, 'mfcc')
 else
     parfor file_index = 1:nFiles
         %%
-        file_index
         file_meta = file_metas(file_index);
         subfolder = file_meta.subfolder;
         wavfile_name = file_meta.wavfile_name;
@@ -63,11 +62,12 @@ date = datestr(now());
 
 % Save
 batch_id_str = num2str(batch_id, '%1.2d');
-savefile_name = [setting2prefix(setting), '_batch', batch_id_str];
-if ~exist('features','dir')
-    mkdir('features');
+prefix = setting2prefix(setting);
+savefile_name = ['batch', batch_id_str];
+if ~exist(prefix,'dir')
+    mkdir(prefix);
 end
-savefile_path = ['features/', savefile_name];
+savefile_path = [prefix, '/', savefile_name];
 save(savefile_path, 'rwcbatch', 'setting', 'host', 'elapsed', 'date');
 
 % Print termination message

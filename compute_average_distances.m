@@ -1,6 +1,6 @@
 function [summary,features] = compute_average_distances(setting, features, dist)
 if nargin < 3
-    dist = 'cosine';
+    dist = 'euclidean';
 end
 
 %% Concatenate data into a matrix

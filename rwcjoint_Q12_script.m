@@ -1,6 +1,5 @@
-setting.arch = 'plain';
+setting.arch = 'joint';
 setting.Q = 12;
-setting.wavelet = 'gammatone';
 
 nBatches = 2;
 for batch_id = 1:nBatches

@@ -25,12 +25,12 @@ opts{2}.time.U_log2_oversampling = 2;
 opts{2}.time.S_log2_oversampling = 2;
 % Joint scattering
 if strcmp(setting.arch, 'joint')
-    opts{2}.banks.gamma = struct();
+    opts{2}.gamma = struct();
 end
 % Spiral scattering
 if strcmp(setting.arch, 'spiral')
-    opts{2}.banks.gamma.handle = @morlet_1d;
-    opts{2}.banks.j.handle = @finitediff_1d;
+    opts{2}.gamma.handle = @morlet_1d;
+    opts{2}.j.handle = @finitediff_1d;
 end
 % Second nonlinearity
 opts{2}.nonlinearity.name = 'modulus';

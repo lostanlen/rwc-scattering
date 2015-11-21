@@ -8,7 +8,9 @@ disp('Computing all pairwise distances...');
 tic();
 data_matrix = [features.data];
 pdists = pdist(data_matrix.', dist);
-mean_pdists = mean(pdists);
+pdists_mean = mean(pdists);
+pdists_std = std(pdists);
+pdists_length = length(pdists);
 toc();
 
 %%
@@ -25,6 +27,7 @@ for instrument_id = 1:nInstruments
     instrument_pdists = pdist(instrument_data.', dist);
     mean_instrument_pdists(instrument_id) = mean(instrument_pdists);
     std_instrument_pdists(instrument_id) = std(instrument_pdists);
+    length_instrument_pdists(instrument_id) = length(instrument_pdists);
 end
 toc();
 %%
@@ -68,37 +71,81 @@ for file_id = 1:nFiles
 end
 toc();
 %%
-mean_pitch_dist = mean([features.pitch_dist]);
-mean_nuance_dist = mean([features.nuance_dist]);
-mean_style_dist = mean([features.style_dist]);
+pitch_dists = [features.pitch_dist];
+mean_pitch_dist = mean(pitch_dists);
+std_pitch_dist = std(pitch_dists);
+length_pitch_dist = length(pitch_dists);
+
+nuance_dists = [features.nuance_dist];
+mean_nuance_dist = mean(nuance_dists);
+std_nuance_dist = std(nuance_dists);
+length_nuance_dist = length(nuance_dists);
+
+style_dists = [features.style_dist];
+mean_style_dist = mean(style_dists);
+std_style_dist = std(style_dists);
+length_style_dist = length(style_dists);
 
 %%
 mean_pitch_dist_per_instr = zeros(1, nInstruments);
+std_pitch_dist_per_instr = zeros(1, nInstruments);
+length_pitch_dist_per_instr = zeros(1, nInstruments);
+
 mean_nuance_dist_per_instr = zeros(1, nInstruments);
+std_nuance_dist_per_instr = zeros(1, nInstruments);
+length_nuance_dist_per_instr = zeros(1,nInstruments);
+
 mean_style_dist_per_instr = zeros(1, nInstruments);
+std_style_dist_per_instr = zeros(1, nInstruments);
+length_style_dist_per_instr = zeros(1, nInstruments);
+
 for instrument_id = 1:nInstruments
+    instrument_features = features([features.instrument_id] == instrument_id);
+
+    instrument_pitch_dists = [instrument_features.pitch_dist];
     mean_pitch_dist_per_instr(instrument_id) = ...
-        mean([features([features.instrument_id]==instrument_id).pitch_dist]);
+        mean(instrument_pitch_dists);
+    std_pitch_dist_per_instr(instrument_id) = ...
+        std(instrument_pitch_dists);
+    length_pitch_dist_per_instr(instrument_id) = ...
+        length(instrument_pitch_dists);
+    
+    instrument_nuance_dists = [instrument_features.nuance_dist];
     mean_nuance_dist_per_instr(instrument_id) = ...
-        mean([features([features.instrument_id]==instrument_id).nuance_dist]);
+        mean(instrument_nuance_dists);
+    std_nuance_dist_per_instr(instrument_id) = ...
+        std(instrument_nuance_dists);
+    length_nuance_dist_per_instr(instrument_id) = ...
+        length(instrument_nuance_dists);
+    
+    instrument_style_dists = [instrument_features.style_dist];
     mean_style_dist_per_instr(instrument_id) = ...
-        mean([features([features.instrument_id]==instrument_id).style_dist]);
+        mean(instrument_style_dists);
+    std_style_dist_per_instr(instrument_id) = ...
+        std(instrument_style_dists);
+    length_style_dist_per_instr(instrument_id) = ...
+        length(instrument_style_dists);
 end
 
 %%
 summary.dist = dist;
-summary.mean_absdist = mean_pdists;
-summary.mean_pitch_reldist = mean_pitch_dist / mean_pdists;
-summary.mean_nuance_reldist = mean_nuance_dist / mean_pdists;
-summary.mean_style_reldist = mean_style_dist / mean_pdists;
-summary.mean_pitch_reldist_per_instr = mean_pitch_dist_per_instr/ mean_pdists;
-summary.mean_nuance_reldist_per_instr = mean_nuance_dist_per_instr;
-summary.mean_style_reldist_per_instr = mean_style_dist_per_instr / mean_pdists;
+summary.absdist_mean = pdists_mean;
+summary.absdist_std = pdists_std;
+summary.absdist_length = pdists_length;
+summary.pitch_reldist_mean = mean_pitch_dist / pdists_mean;
+summary.pitch_reldist_std = std_pitch_dist / pdists_mean;
+summary.pitch_reldist_length = length_pitch_dist;
+summary.nuance_reldist_mean = mean_nuance_dist / pdists_mean;
+summary.nuance_reldist_std = std_nuance_dist / pdists_mean;
+summary.nuance_reldist_length = length_nuance_dist;
+summary.style_reldist_mean = mean_style_dist / pdists_mean;
+summary.style_reldist_std = std_style_dist / pdists_mean;
+summary.style_reldist_length = length_style_dist;
 summary.setting = setting;
 
 %% Save summary
 prefix = setting2prefix(setting);
-if ~exist(prefix,'dir')
+if ~exist(prefix, 'dir')
     mkdir(prefix);
 end
 filename = [prefix, '_summary'];

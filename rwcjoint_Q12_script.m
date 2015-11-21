@@ -1,4 +1,4 @@
-setting.arch = 'plain';
+setting.arch = 'joint';
 setting.Q = 12;
 
 nBatches = 45;

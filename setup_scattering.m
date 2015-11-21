@@ -32,20 +32,18 @@ if strcmp(setting.arch, 'spiral')
     opts{2}.banks.gamma.handle = @morlet_1d;
     opts{2}.banks.j.handle = @finitediff_1d;
 end
-% Second-order blurring
-opts{2}.invariants.time.invariant_handle = @gamma_1d;
-opts{2}.invariants.time.invariance = 'blurred';
-opts{2}.invariants.time.T = T;
-opts{2}.invariants.time.S_log2_oversampling = 2;
 % Second nonlinearity
 opts{2}.nonlinearity.name = 'modulus';
 % Third-order blurring
+opts{3}.invariants.time.subscripts = 1;
 opts{3}.invariants.time.invariant_handle = @gamma_1d;
 opts{3}.invariants.time.invariance = 'blurred';
 opts{3}.invariants.time.T = T;
 opts{3}.invariants.time.S_log2_oversampling = 2;
+opts{3}.invariants.time.size = 4 * T;
 % Third-order frequency transposition invariance
 opts{3}.invariants.gamma.invariance = 'summed';
+opts{3}.invariants.gamma.subscripts = 2;
 % Setup architectures
 archs = sc_setup(opts);
 end

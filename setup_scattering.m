@@ -30,7 +30,7 @@ end
 % Spiral scattering
 if strcmp(setting.arch, 'spiral')
     opts{2}.gamma.handle = @morlet_1d;
-    opts{2}.j.handle = @finitediff_1d;
+    opts{2}.j.wavelet_handle = @finitediff_1d;
     opts{2}.j.J = 3;
 end
 % Second nonlinearity

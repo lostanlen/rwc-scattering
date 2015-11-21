@@ -99,4 +99,4 @@ if ~exist(prefix,'dir')
 end
 filename = [prefix, '_summary'];
 filepath = [prefix, '/', filename];
-save(filepath);
+save(filepath, 'summary');

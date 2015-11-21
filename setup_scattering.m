@@ -33,12 +33,14 @@ if strcmp(setting.arch, 'spiral')
     opts{2}.banks.j.handle= @finitediff_1d;
 end
 % Second-order blurring
+opts{2}.invariants.time.handle = @gamma_1d;
 opts{2}.invariants.time.invariance = 'blurred';
 opts{2}.invariants.time.T = T;
 opts{2}.invariants.time.S_log2_oversampling = 2;
 % Second nonlinearity
 opts{2}.nonlinearity.name = 'modulus';
 % Third-order blurring
+opts{3}.invariants.time.handle = @gamma_1d;
 opts{3}.invariants.time.invariance = 'blurred';
 opts{3}.invariants.time.T = T;
 opts{3}.invariants.time.S_log2_oversampling = 2;

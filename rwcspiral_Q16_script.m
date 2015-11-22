@@ -1,5 +1,5 @@
 setting.arch = 'spiral';
-setting.Q = 12;
+setting.Q = 16;
 
 nBatches = 45;
 for batch_id = 1:nBatches

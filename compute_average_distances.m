@@ -29,7 +29,11 @@ for instrument_id = 1:nInstruments
     instrument_mask = (instrument_ids==instrument_id);
     instrument_features = features(instrument_mask);
     instrument_data = [instrument_features.data];
-    instrument_pdists = pdist(instrument_data.', dist);
+    if strcmp(dist, 'euclidean')
+        instrument_pdists = pdist(instrument_data.', dist).^2;
+    else
+        instrument_pdists = pdist(data_matrix.', dist);
+    end
     mean_instrument_dist(instrument_id) = mean(instrument_pdists);
     std_instrument_dist(instrument_id) = std(instrument_pdists);
     length_instrument_dist(instrument_id) = length(instrument_pdists);

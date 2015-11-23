@@ -13,6 +13,7 @@ else
     pdists = pdist(data_matrix.', dist);
 end
 pdists_mean = mean(pdists);
+pdists_median = median(pdists);
 pdists_std = std(pdists);
 pdists_length = length(pdists);
 toc();
@@ -35,6 +36,7 @@ for instrument_id = 1:nInstruments
         instrument_pdists = pdist(instrument_data.', dist);
     end
     mean_instrument_dist(instrument_id) = mean(instrument_pdists);
+    median_instrument_dist(instrument_id) = median(instrument_pdists);
     std_instrument_dist(instrument_id) = std(instrument_pdists);
     length_instrument_dist(instrument_id) = length(instrument_pdists);
 end
@@ -98,29 +100,35 @@ toc();
 %%
 pitch_dists = [features.pitch_dist];
 mean_pitch_dist = mean(pitch_dists);
+median_pitch_dist = median(pitch_dists);
 std_pitch_dist = std(pitch_dists);
 length_pitch_dist = length(pitch_dists);
 
 nuance_dists = [features.nuance_dist];
 mean_nuance_dist = mean(nuance_dists);
+median_nuance_dist = median(nuance_dists);
 std_nuance_dist = std(nuance_dists);
 length_nuance_dist = length(nuance_dists);
 
 style_dists = [features.style_dist];
 mean_style_dist = mean(style_dists);
+median_style_dist = median(style_dists);
 std_style_dist = std(style_dists);
 length_style_dist = length(style_dists);
 
 %%
 mean_pitch_dist_per_instr = zeros(1, nInstruments);
+median_pitch_dist_per_inst = zeros(1, nInstruments);
 std_pitch_dist_per_instr = zeros(1, nInstruments);
 length_pitch_dist_per_instr = zeros(1, nInstruments);
 
-mean_nuance_dist_per_instr = zeros(1, nInstruments);
+mean_pitch_dist_per_instr = zeros(1, nInstruments);
+median_pitch_dist_per_inst = zeros(1, nInstruments);
 std_nuance_dist_per_instr = zeros(1, nInstruments);
 length_nuance_dist_per_instr = zeros(1,nInstruments);
 
 mean_style_dist_per_instr = zeros(1, nInstruments);
+median_style_dist_per_inst = zeros(1, nInstruments);
 std_style_dist_per_instr = zeros(1, nInstruments);
 length_style_dist_per_instr = zeros(1, nInstruments);
 
@@ -130,6 +138,8 @@ for instrument_id = 1:nInstruments
     instrument_pitch_dists = [instrument_features.pitch_dist];
     mean_pitch_dist_per_instr(instrument_id) = ...
         mean(instrument_pitch_dists);
+    median_pitch_dist_per_instr(instrument_id) = ...
+        median(instrument_pitch_dists);
     std_pitch_dist_per_instr(instrument_id) = ...
         std(instrument_pitch_dists);
     length_pitch_dist_per_instr(instrument_id) = ...
@@ -138,6 +148,8 @@ for instrument_id = 1:nInstruments
     instrument_nuance_dists = [instrument_features.nuance_dist];
     mean_nuance_dist_per_instr(instrument_id) = ...
         mean(instrument_nuance_dists);
+    median_nuance_dist_per_instr(instrument_id) = ...
+        median(instrument_nuance_dists);
     std_nuance_dist_per_instr(instrument_id) = ...
         std(instrument_nuance_dists);
     length_nuance_dist_per_instr(instrument_id) = ...
@@ -146,6 +158,8 @@ for instrument_id = 1:nInstruments
     instrument_style_dists = [instrument_features.style_dist];
     mean_style_dist_per_instr(instrument_id) = ...
         mean(instrument_style_dists);
+    median_style_dist_per_instr(instrument_id) = ...
+        median(instrument_style_dists);
     std_style_dist_per_instr(instrument_id) = ...
         std(instrument_style_dists);
     length_style_dist_per_instr(instrument_id) = ...
@@ -155,22 +169,29 @@ end
 %%
 summary.dist = dist;
 summary.absdist_mean = pdists_mean;
+summary.absdist_median = pdists_median;
 summary.absdist_std = pdists_std;
 summary.absdist_length = pdists_length;
 summary.pitch_reldist_mean = mean_pitch_dist / pdists_mean;
+summary.pitch_reldist_median = median_pitch_dist / pdists_mean;
 summary.pitch_reldist_std = std_pitch_dist / pdists_mean;
 summary.pitch_reldist_length = length_pitch_dist;
 summary.nuance_reldist_mean = mean_nuance_dist / pdists_mean;
+summary.nuance_reldist_median = median_nuance_dist / pdists_mean;
 summary.nuance_reldist_std = std_nuance_dist / pdists_mean;
 summary.nuance_reldist_length = length_nuance_dist;
 summary.style_reldist_mean = mean_style_dist / pdists_mean;
+summary.style_reldist_median = median_style_dist / pdists_mean;
 summary.style_reldist_std = std_style_dist / pdists_mean;
 summary.style_reldist_length = length_style_dist;
 summary.withininstrument_reldist_means = mean_instrument_dist / pdists_mean;
+summary.withininstrument_reldist_medians = median_instrument_dist / pdists_mean;
 summary.withininstrument_reldist_stds = std_instrument_dist / pdists_mean;
 summary.withininstrument_reldist_lengths = length_instrument_dist;
 summary.withininstrument_reldist_globalmean = ...
     mean(summary.withininstrument_reldist_means);
+summary.withininstrument_reldist_globalmedian = ...
+    median(summary.withininstrument_reldist_medians);
 summary.withininstrument_reldist_globalstd = ...
     mean(summary.withininstrument_reldist_stds);
 summary.instrument_names = ...

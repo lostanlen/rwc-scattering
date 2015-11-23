@@ -42,9 +42,6 @@ opts{3}.invariants.time.invariance = 'blurred';
 opts{3}.invariants.time.T = T;
 opts{3}.invariants.time.S_log2_oversampling = 2;
 opts{3}.invariants.time.size = 4 * T;
-% Third-order frequency transposition invariance
-opts{3}.invariants.gamma.invariance = 'summed';
-opts{3}.invariants.gamma.subscripts = 2;
 % Setup architectures
 archs = sc_setup(opts);
 end

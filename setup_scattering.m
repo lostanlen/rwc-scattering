@@ -22,17 +22,14 @@ end
 opts{2}.time.handle = @gammatone_1d;
 opts{2}.time.sibling_mask_factor = 2.0;
 opts{2}.time.U_log2_oversampling = 2;
-opts{2}.time.S_log2_oversampling = 2;
-opts{2}.time.sibling_mask_factor = Inf;
+opts{2}.time.S_log2_oversampling = 1;
 % Joint scattering
 if strcmp(setting.arch, 'joint')
     opts{2}.gamma.handle = @morlet_1d;
-    opts{2}.gamma.U_log2_oversampling = Inf;
 end
 % Spiral scattering
 if strcmp(setting.arch, 'spiral')
     opts{2}.gamma.handle = @morlet_1d;
-    opts{2}.gamma.U_log2_oversampling = Inf;
     opts{2}.j.wavelet_handle = @finitediff_1d;
     opts{2}.j.J = 3;
 end
@@ -43,7 +40,7 @@ opts{3}.invariants.time.subscripts = 1;
 opts{3}.invariants.time.invariant_handle = @gamma_1d;
 opts{3}.invariants.time.invariance = 'blurred';
 opts{3}.invariants.time.T = T;
-opts{3}.invariants.time.S_log2_oversampling = 2;
+opts{3}.invariants.time.S_log2_oversampling = 1;
 opts{3}.invariants.time.size = 4 * T;
 % Setup architectures
 archs = sc_setup(opts);

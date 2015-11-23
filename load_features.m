@@ -1,7 +1,7 @@
 function features = load_features(setting, summarization_str)
 % Generate prefix string
 prefix = setting2prefix(setting);
-nBatches = 45;
+nBatches = 32;
 batch_features = cell(nBatches,1);
 % Load batches
 for batch_id = 1:nBatches

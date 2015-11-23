@@ -1,9 +1,15 @@
 setting.arch = 'mfcc';
 
+
+% Parse RWC folder
+file_metas = parse_rwc('~/datasets/rwc');
+
+%%
+
 %  This loop in computed in the cluster
-nBatches = 45;
+nBatches = length(unique([file_metas.batch_id]));
 for batch_id = 1:nBatches
-    compute_batch(batch_id, setting);
+    compute_batch(batch_id, file_metas, setting);
 end
 
 %%

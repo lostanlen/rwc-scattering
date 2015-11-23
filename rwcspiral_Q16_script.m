@@ -1,5 +1,5 @@
 %% Settings
-setting.arch = 'plain';
+setting.arch = 'spiral';
 setting.Q = 16;
 
 %% Parse RWC folder

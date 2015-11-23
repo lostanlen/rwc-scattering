@@ -16,7 +16,7 @@ tic();
 if strcmp(setting.arch, 'mfcc')
     parfor file_index = 1:nFiles
         % Loading
-        file_meta = file_metas(file_index);
+        file_meta = rwcbatch(file_index);
         subfolder = file_meta.subfolder;
         wavfile_name = file_meta.wavfile_name;
         file_path = ['~/datasets/rwc/', subfolder, '/', wavfile_name];
@@ -31,7 +31,7 @@ if strcmp(setting.arch, 'mfcc')
 else
     parfor file_index = 1:nFiles
         %%
-        file_meta = file_metas(file_index);
+        file_meta = rwcbatch(file_index);
         subfolder = file_meta.subfolder;
         wavfile_name = file_meta.wavfile_name;
         file_path = ['~/datasets/rwc/', subfolder, '/', wavfile_name];

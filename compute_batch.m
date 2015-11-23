@@ -23,9 +23,10 @@ pitch_max = (pitch_median+13);
 rwcbatch = rwcbatch([rwcbatch.pitch_id] >= pitch_min);
 rwcbatch = rwcbatch([rwcbatch.pitch_id] <= pitch_max);
 
-% Initialize fields signal, data, and setting
+% Initialize fields signal, data, setting, and S
 [rwcbatch.signal] = deal(0);
 [rwcbatch.data] = deal(0);
+[rwcbatch.S] = deal(0);
 [rwcbatch.setting] = deal(setting);
 
 nFiles = length(rwcbatch);
@@ -72,6 +73,7 @@ else
             formatted_layers{layer_index} = format_layer(S{layer_index}, 1);
         end
         data = [formatted_layers{:}].';
+        rwcbatch(file_index).S = S;
         rwcbatch(file_index).signal = signal;
         rwcbatch(file_index).data = data;
     end

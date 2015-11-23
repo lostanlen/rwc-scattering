@@ -23,7 +23,7 @@ nFiles = length(rwcbatch);
 % Measure elapsed time with tic() and toc()
 tic();
 if strcmp(setting.arch, 'mfcc')
-    for file_index = 1:nFiles
+    parfor file_index = 1:nFiles
         % Loading
         file_meta = rwcbatch(file_index);
         subfolder = file_meta.subfolder;
@@ -38,7 +38,7 @@ if strcmp(setting.arch, 'mfcc')
         rwcbatch(file_index).setting = setting;
     end
 else
-    for file_index = 1:nFiles
+    parfor file_index = 1:nFiles
         %%
         file_meta = rwcbatch(file_index);
         subfolder = file_meta.subfolder;

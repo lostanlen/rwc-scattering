@@ -10,6 +10,7 @@ file_metas = parse_rwc('~/datasets/rwc');
 % Filter folder according to specified batch
 rwcbatch = file_metas([file_metas.batch_id] == batch_id);
 
+
 % Narrow the pitch range to 31 pitches
 pitches = unique([rwcbatch.pitch_id]);
 pitch_median = median(pitches);
@@ -17,6 +18,11 @@ pitch_min = (pitch_median-15);
 pitch_max = (pitch_median+15);
 rwcbatch = rwcbatch([rwcbatch.pitch_id] >= pitch_min);
 rwcbatch = rwcbatch([rwcbatch.pitch_id] <= pitch_max);
+
+% Initialize fields signal, data, and setting
+[rwcbatch.signal] = deal(0);
+[rwcbatch.data] = deal(0);
+[rwcbatch.setting] = deal(setting);
 
 nFiles = length(rwcbatch);
 
@@ -30,12 +36,16 @@ if strcmp(setting.arch, 'mfcc')
         wavfile_name = file_meta.wavfile_name;
         file_path = ['~/datasets/rwc/', subfolder, '/', wavfile_name];
         [signal, sample_rate] = audioread_compat(file_path);
-        mfcc = melfcc(signal, sample_rate);
+        mfcc = melfcc(signal, sample_rate , ...
+            'wintime', 0.016, ...
+            'lifterexp', 0, ...
+            'minfreq', 133.33, ...
+            'maxfreq', 6855.6, ...
+            'sumpower', 0);
         % We remove the first line, which corresponds to energy coefficient
         data = mfcc(2:end, :);
         rwcbatch(file_index).signal = signal;
         rwcbatch(file_index).data = data;
-        rwcbatch(file_index).setting = setting;
     end
 else
     parfor file_index = 1:nFiles
@@ -60,7 +70,6 @@ else
         data = [formatted_layers{:}].';
         rwcbatch(file_index).signal = signal;
         rwcbatch(file_index).data = data;
-        rwcbatch(file_index).setting = setting;
     end
 end
 elapsed = toc();

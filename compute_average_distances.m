@@ -32,7 +32,7 @@ for instrument_id = 1:nInstruments
     if strcmp(dist, 'euclidean')
         instrument_pdists = pdist(instrument_data.', dist).^2;
     else
-        instrument_pdists = pdist(data_matrix.', dist);
+        instrument_pdists = pdist(instrument_data.', dist);
     end
     mean_instrument_dist(instrument_id) = mean(instrument_pdists);
     std_instrument_dist(instrument_id) = std(instrument_pdists);
@@ -65,7 +65,7 @@ for file_id = 1:nFiles
         else
             d = pdist(cat(1, x', y'), dist);
         end
-        features(file_id).nuance_dist = d;
+        features(file_id).pitch_dist = d;
     end
     upnuance_id = find((batch_ids==batch_id) & ...
         (nuance_ids==(nuance_id+1)) & (pitch_ids==pitch_id));
@@ -90,7 +90,7 @@ for file_id = 1:nFiles
         else
             d = pdist(cat(1, x', y'), dist);
         end
-        features(file_id).nuance_dist = d;
+        features(file_id).style_dist = d;
     end
 end
 toc();

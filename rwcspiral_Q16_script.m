@@ -10,4 +10,5 @@ end
 features = load_features(setting, 'max');
 
 %%
-summary = compute_average_distances(setting, features)
+summary = compute_average_distances(setting, features, 'euclidean')
+summary = compute_average_distances(setting, features, 'cosine')

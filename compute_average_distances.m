@@ -46,6 +46,7 @@ instrument_ids = [features.instrument_id];
 nuance_ids = [features.nuance_id];
 pitch_ids = [features.pitch_id];
 style_ids = [features.style_id];
+nStyles = max(style_ids);
 
 disp('Computing distances related to pitch, nuance, and style...');
 tic();
@@ -79,7 +80,7 @@ for file_id = 1:nFiles
         end
         features(file_id).nuance_dist = d;
     end
-    nextstyle_id = find((style_ids==(1+mod(style_id+1-1,3))) & ...
+    nextstyle_id = find((style_ids==(1+mod(style_id+1-1,nStyles))) & ...
         (nuance_ids==nuance_id) & (pitch_ids==pitch_id) & ...
         (instrument_ids==instrument_id));
     if ~isempty(nextstyle_id)
@@ -172,6 +173,9 @@ summary.withininstrument_reldist_globalmean = ...
     mean(summary.withininstrument_reldist_means);
 summary.withininstrument_reldist_globalstd = ...
     mean(summary.withininstrument_reldist_stds);
+summary.instrument_names = ...
+    arrayfun(@(i) features([features.instrument_id] == i).instrument_name, ...
+    1:16, 'UniformOutput', false).';
 summary.setting = setting;
 
 %% Save summary
@@ -179,6 +183,6 @@ prefix = setting2prefix(setting);
 if ~exist(prefix, 'dir')
     mkdir(prefix);
 end
-filename = [prefix, '_summary'];
+filename = [prefix, '_summary', '_', dist];
 filepath = [prefix, '/', filename];
 save(filepath, 'summary');

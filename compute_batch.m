@@ -1,20 +1,25 @@
-function rwcbatch = compute_batch(batch_id, setting)
+function rwcbatch = compute_batch(batch_id, file_metas, setting)
 if ~strcmp(setting.arch, 'mfcc')
     archs = setup_scattering(setting);
     N = 131072;
 end
 
-% Parse RWC folder
-file_metas = parse_rwc('~/datasets/rwc');
-
 % Filter folder according to specified batch
 rwcbatch = file_metas([file_metas.batch_id] == batch_id);
 
+% Narrow the pitch range to pitches that have 3 nuances
+p_pitches = [rwcbatch([rwcbatch.nuance_id] == 1).pitch_id];
+mf_pitches = [rwcbatch([rwcbatch.nuance_id] == 2).pitch_id];
+f_pitches = [rwcbatch([rwcbatch.nuance_id] == 3).pitch_id];
+pitches = intersect(intersect(p_pitches, mf_pitches), f_pitches);
 
-% Narrow the pitch range to 31 pitches
+% Assert that pitches are along a chromatic scale
+assert(isequal(pitches, (min(pitches):max(pitches))))
+
+% Narrow the pitch range to 28 pitches
 pitch_median = median(pitches);
-pitch_min = (pitch_median-15);
-pitch_max = (pitch_median+15);
+pitch_min = (pitch_median-14);
+pitch_max = (pitch_median+13);
 rwcbatch = rwcbatch([rwcbatch.pitch_id] >= pitch_min);
 rwcbatch = rwcbatch([rwcbatch.pitch_id] <= pitch_max);
 

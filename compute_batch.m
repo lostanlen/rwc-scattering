@@ -1,4 +1,4 @@
-function batch = compute_batch(batch_id, setting)
+function rwcbatch = compute_batch(batch_id, setting)
 if ~strcmp(setting.arch, 'mfcc')
     archs = setup_scattering(setting);
     N = 131072;
@@ -9,12 +9,21 @@ file_metas = parse_rwc('~/datasets/rwc');
 
 % Filter folder according to specified batch
 rwcbatch = file_metas([file_metas.batch_id] == batch_id);
+
+% Narrow the pitch range to 31 pitches
+pitches = unique([rwcbatch.pitch_id]);
+pitch_median = median(pitches);
+pitch_min = (pitch_median-15);
+pitch_max = (pitch_median+15);
+rwcbatch = rwcbatch([rwcbatch.pitch_id] >= pitch_min);
+rwcbatch = rwcbatch([rwcbatch.pitch_id] <= pitch_max);
+
 nFiles = length(rwcbatch);
 
 % Measure elapsed time with tic() and toc()
 tic();
 if strcmp(setting.arch, 'mfcc')
-    parfor file_index = 1:nFiles
+    for file_index = 1:nFiles
         % Loading
         file_meta = rwcbatch(file_index);
         subfolder = file_meta.subfolder;
@@ -29,7 +38,7 @@ if strcmp(setting.arch, 'mfcc')
         rwcbatch(file_index).setting = setting;
     end
 else
-    parfor file_index = 1:nFiles
+    for file_index = 1:nFiles
         %%
         file_meta = rwcbatch(file_index);
         subfolder = file_meta.subfolder;

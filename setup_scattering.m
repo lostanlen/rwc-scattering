@@ -5,8 +5,8 @@ function archs = setup_scattering(setting)
 T = 32768;
 opts{1}.time.T = T;
 opts{1}.time.max_Q = setting.Q;
-% 8 octaves
-opts{1}.time.gamma_bounds = [1 8*setting.Q];
+% 10 octaves
+opts{1}.time.gamma_bounds = [1 10*setting.Q];
 % Gammatone wavelet
 opts{1}.time.handle = @gammatone_1d;
 % Avoid chunking
@@ -23,13 +23,16 @@ opts{2}.time.handle = @gammatone_1d;
 opts{2}.time.sibling_mask_factor = 2.0;
 opts{2}.time.U_log2_oversampling = 2;
 opts{2}.time.S_log2_oversampling = 2;
+opts{2}.time.sibling_mask_factor = Inf;
 % Joint scattering
 if strcmp(setting.arch, 'joint')
-    opts{2}.gamma = struct();
+    opts{2}.gamma.handle = @morlet_1d;
+    opts{2}.gamma.U_log2_oversampling = Inf;
 end
 % Spiral scattering
 if strcmp(setting.arch, 'spiral')
     opts{2}.gamma.handle = @morlet_1d;
+    opts{2}.gamma.U_log2_oversampling = Inf;
     opts{2}.j.wavelet_handle = @finitediff_1d;
     opts{2}.j.J = 3;
 end

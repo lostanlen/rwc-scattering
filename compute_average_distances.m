@@ -7,7 +7,11 @@ end
 disp('Computing all pairwise distances...');
 tic();
 data_matrix = [features.data];
-pdists = pdist(data_matrix.', dist);
+if strcmp(dist, 'euclidean')
+    pdists = pdist(data_matrix.', dist).^2;
+else
+    pdists = pdist(data_matrix.', dist);
+end
 pdists_mean = mean(pdists);
 pdists_std = std(pdists);
 pdists_length = length(pdists);
@@ -52,14 +56,24 @@ for file_id = 1:nFiles
     if ~isempty(uppitch_id)
         x = features(uppitch_id).data;
         y = features(file_id).data;
-        features(file_id).pitch_dist = pdist(cat(1, x', y'), dist);
+        if strcmp(dist, 'euclidean')
+            d = pdist(cat(1, x', y'), dist).^2;
+        else
+            d = pdist(cat(1, x', y'), dist);
+        end
+        features(file_id).nuance_dist = d;
     end
     upnuance_id = find((batch_ids==batch_id) & ...
         (nuance_ids==(nuance_id+1)) & (pitch_ids==pitch_id));
     if ~isempty(upnuance_id)
         x = features(upnuance_id).data;
         y = features(file_id).data;
-        features(file_id).nuance_dist = pdist(cat(1, x', y'), dist);
+        if strcmp(dist, 'euclidean')
+            d = pdist(cat(1, x', y'), dist).^2;
+        else
+            d = pdist(cat(1, x', y'), dist);
+        end
+        features(file_id).nuance_dist = d;
     end
     nextstyle_id = find((style_ids==(1+mod(style_id+1-1,3))) & ...
         (nuance_ids==nuance_id) & (pitch_ids==pitch_id) & ...
@@ -67,7 +81,12 @@ for file_id = 1:nFiles
     if ~isempty(nextstyle_id)
         x = features(nextstyle_id).data;
         y = features(file_id).data;
-        features(file_id).style_dist = pdist(cat(1, x', y'), dist);
+        if strcmp(dist, 'euclidean')
+            d = pdist(cat(1, x', y'), dist).^2;
+        else
+            d = pdist(cat(1, x', y'), dist);
+        end
+        features(file_id).nuance_dist = d;
     end
 end
 toc();

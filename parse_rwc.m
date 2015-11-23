@@ -53,10 +53,6 @@ for subfolder_index = 1:nSubfolders
         prefix_scanner = textscan(prefix,'%d%s');
         meta.batch = prefix_scanner{1};
         meta.style_id = mod(meta.batch, 10);
-        if meta.style_id == 3
-            % We skip the third style
-            continue
-        end
         infix_string = prefix_scanner{2}{1};
         n_position = strfind(infix_string,'no');
         o_position = n_position + 1;
@@ -79,6 +75,9 @@ for subfolder_index = 1:nSubfolders
         meta.wavfile_name = wavfile_name;
         metas{subfolder_index}(wavfile_index) = meta;
     end
+    % We skip the third style
+    metas{subfolder_index} = ...
+        metas{subfolder_index}([metas{subfolder_index}.style_id] ~= 3);
 end
 metas = [metas{:}];
 batches = [metas.batch];

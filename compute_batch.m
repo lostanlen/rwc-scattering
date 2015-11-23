@@ -12,7 +12,6 @@ rwcbatch = file_metas([file_metas.batch_id] == batch_id);
 
 
 % Narrow the pitch range to 31 pitches
-pitches = unique([rwcbatch.pitch_id]);
 pitch_median = median(pitches);
 pitch_min = (pitch_median-15);
 pitch_max = (pitch_median+15);

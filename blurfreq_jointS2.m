@@ -1,4 +1,7 @@
 function S = blurfreq_jointS2(S, F)
+%% Burn after reading
+S = rwcbatch(1).S;
+F = 2;
 %% Set options
 opt.T = F;
 opt.size = 8 * 2^nextpow2(size(S{1+1}.data,2));
@@ -25,27 +28,42 @@ S{1+1} = blur_Y(S{1+1}, invariant);
 nUnpadded_frequencies = ceil(unpadded_proportion * size(S{1+1}.data, 2));
 S{1+1}.data = S{1+1}.data(:, 1:nUnpadded_frequencies);
 
-%% Second layer
-% Pad
-nLambda2s = length(S{1+2}.data);
-unpadded_proportions = zeros(nLambda2s, 1);
-for lambda2_index = 1:nLambda2s
-    sub_S2 = S{1+2}.data{lambda2_index};
-    padded_size = 8 * 2^nextpow2(size(sub_S2, 2));
-    padding = zeros(size(sub_S2, 1), padded_size - size(sub_S2, 2));
-    unpadded_proportions(lambda2_index) = size(sub_S2, 2) / padded_size;
-    S{1+2}.data{lambda2_index} = cat(2, sub_S2, padding);
-end
+%% Second layer (manual)
 
-% Blur
-S{1+2} = perform_ft(S{1+2}, invariant.behavior.key);
-S{1+2} = blur_Y(S{1+2}, invariant);
-
-% Unpad
-for lambda2_index = 1:nLambda2s
-    sub_S2 = S{1+2}.data{lambda2_index};
-    unpadded_proportion = unpadded_proportions(lambda2_index);
-    nUnpadded_frequencies = ceil(unpadded_proportion * size(sub_S2, 2));
-    S{1+2}.data{lambda2_index} = real(sub_S2(:, 1:nUnpadded_frequencies));
+nSublayers = length(S{1+2});
+for sublayer_index = 1:nSublayers
+    sublayer = S{1+2}{sublayer_index};
+    if isempty(sublayer)
+        continue
+    end
+    nBlobs = length(sublayer.data);
+    for lambda2 = 1:nBlobs
+        blob = sublayer.data{lambda2};
+        nNodes = length(blob);
+        for node_index = 1:nNodes
+            node = blob{node_index};
+            gamma_range = sublayer.ranges{1+0}{blob_index}{node_index}(:,2);
+            gamma_stride = gamma_range(2);
+            gamma_length = gamma_range(3) - gamma_range(1);
+            % Pad
+            node = cat(2, node, zeros(size(node)));
+            % Select support
+            % The last -1 is due to zero-padding by a factor 2
+            support_index = ...
+                1 + log2(invariant.spec.size) - log2(gamma_length) - 1;
+            phi = invariant.phi{support_index};
+            
+            node = fft(node, [], 2);
+            node(:, 1:length(phi.ft_pos), :) = bsxfun(@times, ...
+                node(:, 1:length(phi.ft_pos), :), phi.ft_pos);
+            node(:, (end-length(phi.ft_pos)+2):end, :) = bsxfun(@times, ...
+                node(:, (end-length(phi.ft_pos)+2):end, :), ...
+                phi.ft_pos(:, end:-1:2));
+            node = ifft(node, [], 2);
+            % Unpad
+            node = node(:, 1:(end/2), :);
+        end
+    end
 end
+%%
 end

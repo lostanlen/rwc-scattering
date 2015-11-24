@@ -58,6 +58,6 @@ save(savefile_path, 'rwcbatch', 'setting', 'host', 'elapsed', 'date');
 disp('--------------------------------------------------------------------------------');
 disp(['Finished batch ', batch_id_str, ' on host ', host, ...
     ' at ', date,' with settings:']);
-disp(setting);
+disp(newsetting);
 disp(['Elapsed time is ', elapsed_str ' seconds.']);
 end

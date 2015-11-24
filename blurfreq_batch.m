@@ -23,7 +23,7 @@ newbatch = rwcbatch;
 nFiles = length(newbatch);
 tic();
 parfor file_index = 1:nFiles
-    newbatch(file_index).S = blurfreq_handle(rwcbatch(file_index).S, F);
+    newbatch(file_index).S = blurfreq_handle(newbatch(file_index).S, F);
 end
 rwcbatch = newbatch;
 

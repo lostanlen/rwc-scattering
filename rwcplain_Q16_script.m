@@ -21,6 +21,5 @@ summary = compute_average_distances(setting, features, 'cosine');
 %% This loop is computed in the cluster
 F = 2;
 for batch_id = 1:nBatches
-    setting.F = F;
-    blurfreq_batch(batch_id, file_metas, setting);
+    blurfreq_batch(batch_id, setting, F);
 end

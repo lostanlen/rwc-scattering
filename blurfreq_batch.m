@@ -26,8 +26,8 @@ parfor file_index = 1:nFiles
     S = newbatch(file_index).S;
     newbatch(file_index).S = blurfreq_handle(S, F);
     S1_mat = format_layer(S{1+1}, 1);
-    S2_mat = format_layer(S{1+2}, 2);
-    newbatch(file_index).data = cat(2, S1_mat, S2_mat).';
+    S2_mat = format_layer(S{1+2}, 1);
+    newbatch(file_index).data = cat(1, S1_mat, S2_mat).';
     newbatch(file_index).S = S;
 end
 rwcbatch = newbatch;

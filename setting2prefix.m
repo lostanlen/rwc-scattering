@@ -6,5 +6,9 @@ if ~strcmp(setting.arch, 'mfcc')
         mu_str = num2str(setting.mu,'%1.0e');
         prefix = [prefix, '_mu', mu_str];
     end
+    if isfield(setting, 'F')
+        F_str = num2str(setting.F,'%0.3d');
+        prefix = [prefix, '_F', F_str];
+    end
 end
 end

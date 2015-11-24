@@ -25,4 +25,8 @@ for F = Fs
     for batch_id = 1:nBatches
         blurfreq_batch(batch_id, setting, F);
     end
+    setting.F = F;
+    features = load_features(setting, 'max');
+    summary = compute_average_distances(setting, features, 'euclidean');
+    summary = compute_average_distances(setting, features, 'cosine');
 end

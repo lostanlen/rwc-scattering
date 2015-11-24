@@ -21,7 +21,7 @@ load(file_path);
 %% Loop over files
 nFiles = length(rwcbatch);
 tic();
-for file_index = 1:nFiles
+parfor file_index = 1:nFiles
     rwcbatch(file_index).S = blurfreq_handle(rwcbatch(file_index).S, F);
 end
 

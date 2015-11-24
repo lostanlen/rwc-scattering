@@ -20,13 +20,15 @@ summary = compute_average_distances(setting, features, 'cosine');
 
 %% This loop is computed in the cluster
 Fs = 2.^(1:8);
+newsetting = setting;
 for F = Fs
     disp(F);
     for batch_id = 1:nBatches
         blurfreq_batch(batch_id, setting, F);
     end
-    setting.F = F;
-    features = load_features(setting, 'max');
-    summary = compute_average_distances(setting, features, 'euclidean');
-    summary = compute_average_distances(setting, features, 'cosine');
+    newsetting = setting;
+    newsetting.F = F;
+    features = load_features(newsetting, 'max');
+    summary = compute_average_distances(newsetting, features, 'euclidean');
+    summary = compute_average_distances(newsetting, features, 'cosine');
 end

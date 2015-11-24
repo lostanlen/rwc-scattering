@@ -19,11 +19,13 @@ file_path = [prefix, '/', file_name];
 load(file_path);
 
 %% Loop over files
-nFiles = length(rwcbatch);
+newbatch = rwcbatch;
+nFiles = length(newbatch);
 tic();
 parfor file_index = 1:nFiles
-    rwcbatch(file_index).S = blurfreq_handle(rwcbatch(file_index).S, F);
+    newbatch(file_index).S = blurfreq_handle(rwcbatch(file_index).S, F);
 end
+rwcbatch = newbatch;
 
 %% Measure elapsed time
 elapsed = toc();

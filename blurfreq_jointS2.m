@@ -1,20 +1,21 @@
 function S = blurfreq_jointS2(S, F)
 %% Burn after reading
-S = rwcbatch(1).S;
-F = 2;
-%% Set options
+%S = rwcbatch(1).S;
+% F = 2;
+
+% Set options
 opt.T = F;
-opt.size = 8 * 2^nextpow2(size(S{1+1}.data,2));
+opt.size = 2^nextpow2(size(S{1+1}.data,2));
 opt.has_multiple_support = true;
 opt.key.time{1}.gamma{1} = [];
 opt.subscripts = 2;
 invariant.spec = fill_invariant_spec(opt);
 invariant.behavior = fill_invariant_behavior(opt);
 
-%% Setup bank
+% Setup bank
 invariant = setup_invariant(invariant);
 
-%% First layer
+% First layer
 % Pad
 padding = zeros(size(S{1+1}.data, 1), opt.size - size(S{1+1}.data, 2));
 unpadded_proportion = size(S{1+1}.data, 2) / opt.size;
@@ -28,7 +29,7 @@ S{1+1} = blur_Y(S{1+1}, invariant);
 nUnpadded_frequencies = ceil(unpadded_proportion * size(S{1+1}.data, 2));
 S{1+1}.data = S{1+1}.data(:, 1:nUnpadded_frequencies);
 
-%% Second layer (manual)
+% Second layer (manual)
 
 nSublayers = length(S{1+2});
 for sublayer_index = 1:nSublayers
@@ -37,13 +38,12 @@ for sublayer_index = 1:nSublayers
         continue
     end
     nBlobs = length(sublayer.data);
-    for lambda2 = 1:nBlobs
-        blob = sublayer.data{lambda2};
+    for blob_index = 1:nBlobs
+        blob = sublayer.data{blob_index};
         nNodes = length(blob);
         for node_index = 1:nNodes
             node = blob{node_index};
             gamma_range = sublayer.ranges{1+0}{blob_index}{node_index}(:,2);
-            gamma_stride = gamma_range(2);
             gamma_length = gamma_range(3) - gamma_range(1);
             % Pad
             node = cat(2, node, zeros(size(node)));
@@ -52,18 +52,27 @@ for sublayer_index = 1:nSublayers
             support_index = ...
                 1 + log2(invariant.spec.size) - log2(gamma_length) - 1;
             phi = invariant.phi{support_index};
-            
+            % Fourier transform
             node = fft(node, [], 2);
+            % Product with positive frequencies of lowpass filter
             node(:, 1:length(phi.ft_pos), :) = bsxfun(@times, ...
                 node(:, 1:length(phi.ft_pos), :), phi.ft_pos);
+            % Product with negative frequencies of lowpass filter
             node(:, (end-length(phi.ft_pos)+2):end, :) = bsxfun(@times, ...
                 node(:, (end-length(phi.ft_pos)+2):end, :), ...
                 phi.ft_pos(:, end:-1:2));
+            % Inverse Fourier transform
             node = ifft(node, [], 2);
             % Unpad
             node = node(:, 1:(end/2), :);
+            % Store
+            blob{node_index} = node;
         end
+        sublayer.data{blob_index} = blob;
     end
+    S{1+2}{sublayer_index} = sublayer;
 end
+Smat = format_layer(S{1+2}, 1);
+imagesc(log1p(max(Smat,0).'))
 %%
 end

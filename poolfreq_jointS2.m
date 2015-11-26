@@ -54,7 +54,7 @@ for sublayer_index = 1:nSublayers
             node = reshape(node, size(node, 1), ...
                 restride, nFrequencies_out, size(node, 3));
             % Max-pool
-            node = max(node, [], 2);
+            node = B * max(node, [], 2);
             % Write node
             blob{node_index} = squeeze(node);
             % Write stride

@@ -33,7 +33,7 @@ for sublayer_index = 1:nSublayers
     nBlobs = length(sublayer.data);
     for blob_index = 1:nBlobs
         % Read blob
-        blob = sublayer{blob_index};
+        blob = sublayer.data{blob_index};
         nNodes = length(blob);
         for node_index = 1:nNodes
             % Read node
@@ -54,7 +54,7 @@ for sublayer_index = 1:nSublayers
             sublayer.ranges{1+0}{blob_index}{node_index}(2,2) = B;
         end
         % Write blob
-        S{1+2}.data{blob_index} = blob;
+        sublayer.data{blob_index} = blob;
     end
     % Write sublayer
     S{1+2}{sublayer_index} = sublayer;

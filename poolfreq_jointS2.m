@@ -23,30 +23,40 @@ S{1+1}.data = squeeze(S1);
 S{1+1}.ranges{1+0}(2,2) = B;
 
 %% Second layer
-nBlobs = length(S{1+2}.data);
-for blob_index = 1:nBlobs
-    % Read blob
-    blob = S{1+2}.data{blob_index};
-    nNodes = length(blob);
-    for node_index = 1:nNodes
-        % Read node
-        node = blob{node_index};
-        % Pad
-        nFrequencies_in = size(node, 2);
-        nFrequencies_out = ceil(nFrequencies_in / B);
-        padding_length = nFrequencies_out * B - nFrequencies_in;
-        padding = zeros(size(node, 1), padding_length);
-        node = cat(2, node, padding);
-        % Reshape
-        node = reshape(node, size(node, 1), B, nFrequencies_out);
-        % Max-pool
-        node = max(node, [], 2);
-        % Write node
-        blob{node_index} = squeeze(node);
-        % Update ranges
-        S{1+2}.ranges{1+0}{blob_index}{node_index}(2,2) = B;
+nSublayers = length(S{1+2});
+for sublayer_index = 1:nSublayers
+    % Read sublayer
+    sublayer = S{1+2}{sublayer_index};
+    if isempty(sublayer)
+        continue
     end
-    % Write blob
-    S{1+2}.data{blob_index} = blob;
+    nBlobs = length(sublayer.data);
+    for blob_index = 1:nBlobs
+        % Read blob
+        blob = sublayer{blob_index};
+        nNodes = length(blob);
+        for node_index = 1:nNodes
+            % Read node
+            node = blob{node_index};
+            % Pad
+            nFrequencies_in = size(node, 2);
+            nFrequencies_out = ceil(nFrequencies_in / B);
+            padding_length = nFrequencies_out * B - nFrequencies_in;
+            padding = zeros(size(node, 1), padding_length);
+            node = cat(2, node, padding);
+            % Reshape
+            node = reshape(node, size(node, 1), B, nFrequencies_out);
+            % Max-pool
+            node = max(node, [], 2);
+            % Write node
+            blob{node_index} = squeeze(node);
+            % Update ranges
+            sublayer.ranges{1+0}{blob_index}{node_index}(2,2) = B;
+        end
+        % Write blob
+        S{1+2}.data{blob_index} = blob;
+    end
+    % Write sublayer
+    S{1+2}{sublayer_index} = sublayer;
 end
 end

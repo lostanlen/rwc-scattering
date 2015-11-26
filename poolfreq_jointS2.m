@@ -42,10 +42,11 @@ for sublayer_index = 1:nSublayers
             nFrequencies_in = size(node, 2);
             nFrequencies_out = ceil(nFrequencies_in / B);
             padding_length = nFrequencies_out * B - nFrequencies_in;
-            padding = zeros(size(node, 1), padding_length);
+            padding = zeros(size(node, 1), padding_length, size(node, 3));
             node = cat(2, node, padding);
             % Reshape
-            node = reshape(node, size(node, 1), B, nFrequencies_out);
+            node = ...
+                reshape(node, size(node, 1), B, nFrequencies_out, size(node, 3));
             % Max-pool
             node = max(node, [], 2);
             % Write node

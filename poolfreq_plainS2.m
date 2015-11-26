@@ -35,6 +35,6 @@ for node_index = 1:nNodes
     % Max-pool
     S2 = max(S2, [], 3);
     % Write
-    S{1+2}.data = squeeze(S2);
+    S{1+2}.data{node_index} = squeeze(S2);
 end
 end

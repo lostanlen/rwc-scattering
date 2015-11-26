@@ -38,7 +38,7 @@ for sublayer_index = 1:nSublayers
         for node_index = 1:nNodes
             % Read stride
             stride = sublayer.ranges{1+0}{blob_index}{node_index}(2,2);
-            if stride <= B
+            if stride >= B
                 continue
             end
             % Read node

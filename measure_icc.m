@@ -1,4 +1,4 @@
-function icc = measure_icc(setting, features)
+function icc = measure_icc(features)
 %% Compute the centroid of each instrument
 nFeatures = size(features(1).data, 1);
 nInstruments = length(unique([features.instrument_id]));

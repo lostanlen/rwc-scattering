@@ -46,7 +46,7 @@ date = datestr(now());
 
 %% Generate output file path
 newsetting = setting;
-newsetting.F = B;
+newsetting.B = B;
 newprefix = setting2prefix(newsetting);
 
 %% Save

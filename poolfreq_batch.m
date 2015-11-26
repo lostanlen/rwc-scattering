@@ -13,6 +13,7 @@ switch setting.arch
 end
 
 %% Load batch
+tic();
 batch_id_str = num2str(batch_id, '%1.2d');
 file_name = ['batch', batch_id_str];
 file_path = [prefix, '/', file_name];
@@ -21,7 +22,6 @@ load(file_path);
 %% Loop over files
 newbatch = rwcbatch;
 nFiles = length(newbatch);
-tic();
 parfor file_index = 1:nFiles
     S = newbatch(file_index).S;
     S = poolfreq_handle(S, B);
@@ -31,18 +31,6 @@ parfor file_index = 1:nFiles
     newbatch(file_index).S = S;
 end
 rwcbatch = newbatch;
-
-%% Measure elapsed time
-elapsed = toc();
-elapsed_str = num2str(elapsed, '%2.0f');
-
-%% Get host name
-pcinfo = java.net.InetAddress.getLocalHost();
-host = pcinfo.getHostName(); % class is java.lang.String
-host = char(host); % convert to MATLAB char array
-
-%% Get date
-date = datestr(now());
 
 %% Generate output file path
 newsetting = setting;
@@ -57,6 +45,18 @@ if ~exist(newprefix,'dir')
 end
 savefile_path = [newprefix, '/', savefile_name];
 save(savefile_path, 'rwcbatch', 'setting', 'host', 'elapsed', 'date');
+
+%% Measure elapsed time
+elapsed = toc();
+elapsed_str = num2str(elapsed, '%2.0f');
+
+%% Get host name
+pcinfo = java.net.InetAddress.getLocalHost();
+host = pcinfo.getHostName(); % class is java.lang.String
+host = char(host); % convert to MATLAB char array
+
+%% Get date
+date = datestr(now());
 
 %% Print termination message
 % Print termination message

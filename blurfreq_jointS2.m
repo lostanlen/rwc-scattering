@@ -1,8 +1,4 @@
 function S = blurfreq_jointS2(S, F)
-%% Burn after reading
-%S = rwcbatch(1).S;
-% F = 2;
-
 % Set options
 opt.T = F;
 opt.size = 2^nextpow2(size(S{1+1}.data,2));
@@ -30,7 +26,6 @@ nUnpadded_frequencies = ceil(unpadded_proportion * size(S{1+1}.data, 2));
 S{1+1}.data = S{1+1}.data(:, 1:nUnpadded_frequencies);
 
 % Second layer (manual)
-
 nSublayers = length(S{1+2});
 for sublayer_index = 1:nSublayers
     sublayer = S{1+2}{sublayer_index};
@@ -72,7 +67,4 @@ for sublayer_index = 1:nSublayers
     end
     S{1+2}{sublayer_index} = sublayer;
 end
-Smat = format_layer(S{1+2}, 1);
-imagesc(log1p(max(Smat,0).'))
-%%
 end

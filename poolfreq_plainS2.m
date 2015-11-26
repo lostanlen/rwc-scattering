@@ -14,7 +14,7 @@ S1 = cat(2, S1, padding);
 S1 = reshape(S1, size(S1, 1), B, nFrequencies_out);
 
 % Max-pool
-S1 = max(S1, [], 3);
+S1 = max(S1, [], 2);
 
 % Write
 S{1+1}.data = squeeze(S1);

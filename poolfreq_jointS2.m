@@ -36,25 +36,29 @@ for sublayer_index = 1:nSublayers
         blob = sublayer.data{blob_index};
         nNodes = length(blob);
         for node_index = 1:nNodes
+            % Read stride
+            stride = sublayer.ranges{1+0}{blob_index}{node_index}(2,2);
+            if stride <= B
+                continue
+            end
             % Read node
             node = blob{node_index};
             % Pad
+            restride = B / stride;
             nFrequencies_in = size(node, 2);
-            nFrequencies_out = ceil(nFrequencies_in / B);
-            padding_length = nFrequencies_out * B - nFrequencies_in;
+            nFrequencies_out = ceil(nFrequencies_in / restride);
+            padding_length = nFrequencies_out * restride - nFrequencies_in;
             padding = zeros(size(node, 1), padding_length, size(node, 3));
             node = cat(2, node, padding);
             % Reshape
-            node = ...
-                reshape(node, size(node, 1), B, nFrequencies_out, size(node, 3));
+            node = reshape(node, size(node, 1), ...
+                restride, nFrequencies_out, size(node, 3));
             % Max-pool
             node = max(node, [], 2);
             % Write node
             blob{node_index} = squeeze(node);
-            % Update ranges
+            % Write stride
             sublayer.ranges{1+0}{blob_index}{node_index}(2,2) = B;
-            sublayer.ranges{1+0}{blob_index}{node_index}(3,2) = ...
-                sublayer.ranges{1+0}{blob_index}{node_index}(3,2) - 1;
         end
         % Write blob
         sublayer.data{blob_index} = blob;

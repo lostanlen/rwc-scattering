@@ -30,11 +30,11 @@ for sublayer_index = 1:nSublayers
     if isempty(sublayer)
         continue
     end
-    nBlobs = length(sublayer.data);
+    nBlobs = numel(sublayer.data);
     for blob_index = 1:nBlobs
         % Read blob
         blob = sublayer.data{blob_index};
-        nNodes = length(blob);
+        nNodes = numel(blob);
         for node_index = 1:nNodes
             % Read stride
             stride = sublayer.ranges{1+0}{blob_index}{node_index}(2,2);

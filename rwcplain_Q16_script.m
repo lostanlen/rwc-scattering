@@ -4,9 +4,9 @@ setting.Q = 16;
 
 %% Parse RWC folder
 file_metas = parse_rwc('~/datasets/rwc');
+nBatches = length(unique([file_metas.batch_id]));
 
 %% This loop is computed in the cluster
-nBatches = length(unique([file_metas.batch_id]));
 for batch_id = 1:nBatches
     compute_batch(batch_id, file_metas, setting);
 end

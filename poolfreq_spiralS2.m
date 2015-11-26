@@ -29,6 +29,51 @@ for sublayer_index = 1:nSublayers
     sublayer = S{1+2}{sublayer_index};
     if isempty(sublayer)
         continue
+    elseif length(sublayer.ranges)==2
+        nNodes = numel(sublayer.data);
+        for node_index = 1:nNodes
+            % Read stride
+            stride = sublayer.ranges{1+0}{node_index}(2,2);
+            if stride >= B
+                continue
+            end
+            % Read node
+            node = sublayer{node_index};
+            % Unspiral
+            sizes = [size(node), 1];
+            sizes = [sizes(1), sizes(2)*sizes(3), sizes(4:end)];
+            node = reshape(node, sizes);
+            % Pad
+            restride = B / stride;
+            nFrequencies_in = size(node, 2);
+            nFrequencies_out = ceil(nFrequencies_in / restride);
+            padding_length = nFrequencies_out * restride - nFrequencies_in;
+            sizes = [size(node), 1];
+            padding_sizes = sizes;
+            padding_sizes(2) = padding_length;
+            padding = zeros(padding_sizes);
+            node = cat(2, node, padding);
+            % Reshape
+            sizes = [sizes(1), restride, nFrequencies_out, sizes(3:end)];
+            node = reshape(node, sizes);
+            % Max-pool
+            node = restride * max(node, [], 2);
+            % Write node
+            sublayer{node_index} = squeeze(node);
+            % Update unspiraling in metadata
+            zeroth_ranges = sublayer.ranges{1+0}{node_index};
+            gamma_range = zeroth_ranges(:, 2);
+            octave_range = zeroth_ranges(:, 3);
+            nOctaves = octave_range(3) - octave_range(1);
+            nFilters_per_octave = gamma_range(3) - gamma_range(1);
+            gamma_range(3) = nFilters_per_octave * nOctaves;
+            % Update stride
+            gamma_range(2) = B;
+            zeroth_ranges(:, 2) = gamma_range;
+            zeroth_ranges(:, 3) = [];
+            sublayer.ranges{1+0}{node_index} = zeroth_ranges;
+        end
+        continue
     end
     nBlobs = numel(sublayer.data);
     for blob_index = 1:nBlobs

@@ -13,8 +13,6 @@ end
 
 %% Load features and max-pool across time
 features = load_features(setting, 'max');
-
-%% 
 summary = compute_average_distances(setting, features, 'euclidean');
 summary = compute_average_distances(setting, features, 'cosine');
 
@@ -26,7 +24,7 @@ for B = Bs
     for batch_id = 1:nBatches
         poolfreq_batch(batch_id, setting, B);
     end
-    newsetting.F = F;
+    newsetting.B = B;
     features = load_features(newsetting, 'max');
     summary = compute_average_distances(newsetting, features, 'euclidean');
     summary = compute_average_distances(newsetting, features, 'cosine');

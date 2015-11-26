@@ -53,6 +53,8 @@ for sublayer_index = 1:nSublayers
             blob{node_index} = squeeze(node);
             % Update ranges
             sublayer.ranges{1+0}{blob_index}{node_index}(2,2) = B;
+            sublayer.ranges{1+0}{blob_index}{node_index}(3,2) = ...
+                sublayer.ranges{1+0}{blob_index}{node_index}(3,2) - 1;
         end
         % Write blob
         sublayer.data{blob_index} = blob;

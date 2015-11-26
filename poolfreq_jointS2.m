@@ -23,7 +23,7 @@ S{1+1}.data = squeeze(S1);
 S{1+1}.ranges{1+0}(2,2) = B;
 
 %% Second layer
-nSublayers = length(S{1+2});
+nSublayers = numel(S{1+2});
 for sublayer_index = 1:nSublayers
     % Read sublayer
     sublayer = S{1+2}{sublayer_index};

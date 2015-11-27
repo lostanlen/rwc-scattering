@@ -29,6 +29,33 @@ for sublayer_index = 1:nSublayers
     sublayer = S{1+2}{sublayer_index};
     if isempty(sublayer)
         continue
+    elseif length(sublayer.ranges)==2
+        nNodes = numel(sublayer.data);
+        for node_index = 1:nNodes
+            % Read stride
+            stride = sublayer.ranges{1+0}{node_index}(2,2);
+            if stride >= B
+                continue
+            end
+            % Read node
+            node = sublayer.data{node_index};
+            % Pad
+            restride = B / stride;
+            nFrequencies_in = size(node, 2);
+            nFrequencies_out = ceil(nFrequencies_in / restride);
+            padding_length = nFrequencies_out * restride - nFrequencies_in;
+            padding = zeros(size(node, 1), padding_length, size(node, 3));
+            node = cat(2, node, padding);
+            % Reshape
+            node = reshape(node, size(node, 1), ...
+                restride, nFrequencies_out, size(node, 3));
+            % Max-pool
+            node = restride * max(node, [], 2);
+            % Write node
+            sublayer.data{node_index} = squeeze(node);
+            % Write stride
+            sublayer.ranges{1+0}{node_index}(2,2) = B;
+        end
     end
     nBlobs = numel(sublayer.data);
     for blob_index = 1:nBlobs

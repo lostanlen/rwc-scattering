@@ -5,6 +5,7 @@ icc = zeros(1, nMus);
 
 for mu_index = 1:nMus
     %% Load log-features
+    mu = mus(mu_index);
     [features.logdata] = log1p([features.data] / mu);
     
     %% Compute the centroid of each instrument

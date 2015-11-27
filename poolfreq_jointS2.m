@@ -56,6 +56,7 @@ for sublayer_index = 1:nSublayers
             % Write stride
             sublayer.ranges{1+0}{node_index}(2,2) = B;
         end
+        continue
     end
     nBlobs = numel(sublayer.data);
     for blob_index = 1:nBlobs

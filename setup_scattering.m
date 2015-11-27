@@ -26,6 +26,7 @@ opts{2}.time.S_log2_oversampling = 1;
 % Joint scattering
 if strcmp(setting.arch, 'joint')
     opts{2}.gamma.handle = @morlet_1d;
+    opts{2}.gamma.U_log2_oversampling = Inf;
 end
 % Spiral scattering
 if strcmp(setting.arch, 'spiral')

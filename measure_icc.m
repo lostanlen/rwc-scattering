@@ -38,7 +38,7 @@ nEtas = length(etas);
 medianlog_iccs = zeros(1, nEtas);
 feature_medians = max(median(max([features.data], 0), 2), eps());
 for file_index = 1:nFiles
-    features.data(file_index) = ...
+    features(file_index).data = ...
         bsxfun(@rdivide, max(features(file_index).data, 0), feature_medians);
 end
 

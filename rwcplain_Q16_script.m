@@ -21,8 +21,13 @@ Bs = 2.^(1:8);
 newsetting = setting;
 for B = Bs
     disp(B);
+    for batch_id = 1:nBatches
+        poolfreq_batch(batch_id, setting, B);
+    end
     newsetting.B = B;
     features = load_features(newsetting, 'max');
+    compute_average_distances(newsetting, features, 'euclidean');
+    compute_average_distances(newsetting, features, 'cosine');
     disp('Measuring ICC');tic()
     icc = measure_icc(features);
     disp(icc);

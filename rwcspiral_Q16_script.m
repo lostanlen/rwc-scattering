@@ -28,7 +28,7 @@ for B = Bs
     features = load_features(newsetting, 'max');
     compute_average_distances(newsetting, features, 'euclidean');
     compute_average_distances(newsetting, features, 'cosine');
-    disp('Measuring ICC');tic();
+    disp('Measuring ICC');tic()
     icc = measure_icc(features);
     disp(icc);
     toc();

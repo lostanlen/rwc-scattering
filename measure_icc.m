@@ -1,5 +1,5 @@
 function icc = measure_icc(features)
-mus = logspace(-6,6);
+mus = logspace(-10, -3, 8);
 nMus = length(mus);
 uniformlog_iccs = zeros(1, nMus);
 nFiles = length(features);
@@ -47,7 +47,7 @@ for eta_index = 1:nEtas
     eta = etas(eta_index);
     for file_index = 1:nFiles
         features(file_index).mediandata = ...
-            log1p(features(file_index).mediandata / eta);
+            log1p(features(file_index).data / eta);
     end
     
     %% Compute the centroid of each instrument

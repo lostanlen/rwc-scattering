@@ -26,6 +26,12 @@ for B = Bs
     end
     newsetting.B = B;
     features = load_features(newsetting, 'max');
-    summary = compute_average_distances(newsetting, features, 'euclidean');
-    summary = compute_average_distances(newsetting, features, 'cosine');
+    compute_average_distances(newsetting, features, 'euclidean');
+    compute_average_distances(newsetting, features, 'cosine');
+    disp('Measuring ICC');tic()
+    icc = measure_icc(features);
+    disp(icc);
+    toc();
+    prefix = setting2prefix(newsetting);
+    save([prefix, '/', prefix, '_icc'], 'icc');
 end

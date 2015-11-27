@@ -38,7 +38,7 @@ for sublayer_index = 1:nSublayers
                 continue
             end
             % Read node
-            node = sublayer{node_index};
+            node = sublayer.data{node_index};
             % Unspiral
             sizes = [size(node), 1];
             sizes = [sizes(1), sizes(2)*sizes(3), sizes(4:end)];
@@ -59,7 +59,7 @@ for sublayer_index = 1:nSublayers
             % Max-pool
             node = restride * max(node, [], 2);
             % Write node
-            sublayer{node_index} = squeeze(node);
+            sublayer.data{node_index} = squeeze(node);
             % Update unspiraling in metadata
             zeroth_ranges = sublayer.ranges{1+0}{node_index};
             gamma_range = zeroth_ranges(:, 2);

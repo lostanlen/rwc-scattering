@@ -34,6 +34,7 @@ nFiles = length(rwcbatch);
 % Measure elapsed time with tic() and toc()
 tic();
 if strcmp(setting.arch, 'mfcc')
+    numcep = setting.numcep;
     parfor file_index = 1:nFiles
         % Loading
         file_meta = rwcbatch(file_index);
@@ -46,9 +47,9 @@ if strcmp(setting.arch, 'mfcc')
             'lifterexp', 0, ...
             'minfreq', 133.33, ...
             'maxfreq', 6855.6, ...
-            'sumpower', 0);
-        % We remove the first line, which corresponds to energy coefficient
-        data = mfcc(2:end, :);
+            'sumpower', 0, ...
+            'numcep', numcep);
+        data = mfcc;
         rwcbatch(file_index).signal = signal;
         rwcbatch(file_index).data = data;
     end

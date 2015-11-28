@@ -1,6 +1,8 @@
 function prefix = setting2prefix(setting)
 prefix = ['rwc', setting.arch];
-if ~strcmp(setting.arch, 'mfcc')
+if strcmp(setting.arch, 'mfcc')
+    prefix = [prefix, '_numcep', num2str(setting.numcep, '%0.2d')];
+else
     prefix = [prefix, '_Q', num2str(setting.Q, '%1.2d')];
     if isfield(setting, 'mu')
         mu_str = num2str(setting.mu, '%1.0e');

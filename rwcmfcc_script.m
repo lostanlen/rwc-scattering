@@ -3,11 +3,15 @@ setting.arch = 'mfcc';
 
 %% Parse RWC folder
 file_metas = parse_rwc('~/datasets/rwc');
+nBatches = length(unique([file_metas.batch_id]));
 
 %% This loop in computed in the cluster
-nBatches = length(unique([file_metas.batch_id]));
-for batch_id = 1:nBatches
-    compute_batch(batch_id, file_metas, setting);
+numceps = [40, 23, 11, 3, 1];
+for numcep = numceps
+    setting.numcep = numcep;
+    for batch_id = 1:nBatches
+        compute_batch(batch_id, file_metas, setting);
+    end
 end
 
 %% Load features and max-pool across time

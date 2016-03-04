@@ -5,10 +5,10 @@ setting.numcep = 40;
 file_metas = parse_rwc('~/datasets/rwc');
 nBatches = length(unique([file_metas.batch_id]));
 features = load_features(setting, 'max');
-
+%%
 
 %% Measure intra-class distances at fixed nuance and pitch
-feature_range = 2:40;
+feature_range = 2:13;
 instrument_ids = [features.instrument_id];
 nInstruments = max(instrument_ids);
 mean_style_dist = zeros(nInstruments, 1);

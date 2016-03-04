@@ -1,3 +1,5 @@
+addpath(genpath('~/MATLAB/miningsuite-master'));
+
 %% Load features
 setting.arch = 'mfcc';
 setting.numcep = 40;
@@ -11,12 +13,25 @@ features = load_features(setting, 'max');
 feature_range = 2:13;
 instrument_ids = [features.instrument_id];
 nInstruments = max(instrument_ids);
+mean_instrument_dist = zeros(nInstruments, 1);
 mean_style_dist = zeros(nInstruments, 1);
 mean_pitch_dist = zeros(nInstruments, 1);
 mean_nuance_dist = zeros(nInstruments, 1);
+std_instrument_dist = zeros(nInstruments, 1);
+std_style_dist = zeros(nInstruments, 1);
+std_pitch_dist = zeros(nInstruments, 1);
+std_nuance_dist = zeros(nInstruments, 1);
+
 for instrument_id = 1:nInstruments
     instrument_mask = (instrument_ids==instrument_id);
     instrument_features = features(instrument_mask);
+    % Instrument
+    instrument_data = [instrument_features.data];
+    instrument_data = instrument_data(feature_range, :);
+    instrument_pdists = pdist(instrument_data.', 'euclidean').^2;
+    mean_instrument_dist(instrument_id) = mean(instrument_pdists);
+    std_instrument_dist(instrument_id) = median(instrument_pdists);
+    % Style
     styles = unique([instrument_features.style_id]);
     nStyles = length(styles);
     style_distances = zeros(1, nStyles);
@@ -27,9 +42,10 @@ for instrument_id = 1:nInstruments
         style_features = instrument_features(style_mask);
         style_data = [style_features.data];
         style_data = style_data(feature_range, :);
-        style_pdists = pdist(style_data.').^2;
+        style_pdists = pdist(style_data.', 'euclidean').^2;
         style_distances(style_id) = mean(style_pdists);
     end
+    % Pitch
     pitches = unique([instrument_features.pitch_id]);
     nPitches = length(pitches);
     pitch_distances = zeros(1, nPitches);
@@ -40,9 +56,10 @@ for instrument_id = 1:nInstruments
         pitch_features = instrument_features(pitch_mask);
         pitch_data = [pitch_features.data];
         pitch_data = pitch_data(feature_range, :);
-        pitch_pdists = pdist(pitch_data.').^2;
+        pitch_pdists = pdist(pitch_data.', 'euclidean').^2;
         pitch_distances(pitch_id) = mean(pitch_pdists);
     end
+    % Nuance
     nuances = unique([instrument_features.nuance_id]);
     nNuances = length(nuances);
     nuance_distances = zeros(1, nNuances);
@@ -52,12 +69,33 @@ for instrument_id = 1:nInstruments
         nuance_features = instrument_features(nuance_mask);
         nuance_data = [nuance_features.data];
         nuance_data = nuance_data(feature_range, :);
-        nuance_pdists = pdist(nuance_data.').^2;
+        nuance_pdists = pdist(nuance_data.', 'euclidean').^2;
         nuance_distances(nuance_id) = mean(nuance_pdists);
     end
     mean_style_dist(instrument_id) = mean(style_distances);
+    std_style_dist(instrument_id) = std(style_distances);
     mean_pitch_dist(instrument_id) = mean(pitch_distances);
+    std_pitch_dist(instrument_id) = std(pitch_distances);
     mean_nuance_dist(instrument_id) = mean(nuance_distances);
+    std_nuance_dist(instrument_id) = std(nuance_distances);
+end
+
+[sorted_instrument_dist, sorting_indices] = ...
+    sort(mean_instrument_dist, 'ascend');
+
+sorted_mean_pitch_dist = mean_pitch_dist(sorting_indices);
+sorted_mean_style_dist = mean_style_dist(sorting_indices);
+sorted_mean_nuance_dist = mean_nuance_dist(sorting_indices);
+sorted_std_pitch_dist = std_pitch_dist(sorting_indices);
+sorted_std_style_dist = std_style_dist(sorting_indices);
+sorted_std_nuance_dist = std_nuance_dist(sorting_indices);
+
+sorted_instruments = cell(1, nInstruments);
+for instrument_id = 1:nInstruments
+    booleans = ...
+        find([features.instrument_id]==sorting_indices(instrument_id), 1);
+    sorted_instruments{instrument_id} = ...
+        features(booleans).instrument_name;
 end
 
 plot([mean_pitch_dist, mean_style_dist, mean_nuance_dist])

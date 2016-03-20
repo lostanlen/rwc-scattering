@@ -75,9 +75,6 @@ for subfolder_index = 1:nSubfolders
         meta.wavfile_name = wavfile_name;
         metas{subfolder_index}(wavfile_index) = meta;
     end
-    % We skip the third style
-    metas{subfolder_index} = ...
-        metas{subfolder_index}([metas{subfolder_index}.style_id] ~= 3);
 end
 metas = [metas{:}];
 batches = [metas.batch];

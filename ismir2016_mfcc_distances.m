@@ -1,5 +1,3 @@
-addpath(genpath('~/MATLAB/miningsuite-master'));
-
 %% Load features
 setting.arch = 'mfcc';
 setting.numcep = 40;
@@ -7,20 +5,23 @@ setting.numcep = 40;
 file_metas = parse_rwc('~/datasets/rwc');
 nBatches = length(unique([file_metas.batch_id]));
 features = load_features(setting, 'max');
-%%
 
-%% Measure intra-class distances at fixed nuance and pitch
+%% Measure intra-class distances at fixed nuance, pitch, and style
 feature_range = 2:13;
+percentiles = [0.1 0.25 0.5 0.75 0.9] * 100;
+nPercentiles = length(percentiles);
+
+all_data = [features.data];
+all_data = all_data(feature_range, :);
+all_pdists = pdist(all_data.').^2;
+all_prctiles = prctile(all_pdists, percentiles);
+
 instrument_ids = [features.instrument_id];
 nInstruments = max(instrument_ids);
-mean_instrument_dist = zeros(nInstruments, 1);
-mean_style_dist = zeros(nInstruments, 1);
-mean_pitch_dist = zeros(nInstruments, 1);
-mean_nuance_dist = zeros(nInstruments, 1);
-std_instrument_dist = zeros(nInstruments, 1);
-std_style_dist = zeros(nInstruments, 1);
-std_pitch_dist = zeros(nInstruments, 1);
-std_nuance_dist = zeros(nInstruments, 1);
+instrument_prctiles = zeros(nInstruments, nPercentiles);
+style_prctiles = zeros(nInstruments, nPercentiles);
+nuance_prctiles = zeros(nInstruments, nPercentiles);
+pitch_prctiles = zeros(nInstruments, nPercentiles);
 
 for instrument_id = 1:nInstruments
     instrument_mask = (instrument_ids==instrument_id);
@@ -29,8 +30,6 @@ for instrument_id = 1:nInstruments
     instrument_data = [instrument_features.data];
     instrument_data = instrument_data(feature_range, :);
     instrument_pdists = pdist(instrument_data.', 'euclidean').^2;
-    mean_instrument_dist(instrument_id) = mean(instrument_pdists);
-    std_instrument_dist(instrument_id) = median(instrument_pdists);
     % Style
     styles = unique([instrument_features.style_id]);
     nStyles = length(styles);
@@ -72,57 +71,40 @@ for instrument_id = 1:nInstruments
         nuance_pdists = pdist(nuance_data.', 'euclidean').^2;
         nuance_distances(nuance_id) = mean(nuance_pdists);
     end
-    mean_style_dist(instrument_id) = mean(style_distances);
-    std_style_dist(instrument_id) = std(style_distances);
-    mean_pitch_dist(instrument_id) = mean(pitch_distances);
-    std_pitch_dist(instrument_id) = std(pitch_distances);
-    mean_nuance_dist(instrument_id) = mean(nuance_distances);
-    std_nuance_dist(instrument_id) = std(nuance_distances);
+    instrument_prctiles(instrument_id, :) = ...
+        prctile(instrument_pdists, percentiles);
+    nuance_prctiles(instrument_id, :) = ...
+        prctile(nuance_pdists, percentiles);
+    style_prctiles(instrument_id, :) = ...
+        prctile(style_pdists, percentiles);
+    pitch_prctiles(instrument_id, :) = ...
+        prctile(pitch_pdists, percentiles);
+end
+%%
+required_instruments = {'Clarinet', 'Flute', 'Trumpet', 'Piano', ...
+    'Tenor Saxophone', 'Piano', 'Violin'};
+
+summary = struct();
+
+for required_id = 1:length(required_instruments)
+    required_instrument = required_instruments{required_id};
+    booleans = cellfun(@(x) strcmp(required_instrument, x), ...
+        {features.instrument_name});
+    instrument_id = features(find(booleans, 1)).instrument_id;
+    instrument_summary = struct();
+    instrument_summary.instrument_prctiles = ...
+        instrument_prctiles(instrument_id, :);
+    instrument_summary.nuance_prctiles = ...
+        nuance_prctiles(instrument_id, :);
+    instrument_summary.style_prctiles = ...
+        style_prctiles(instrument_id, :);
+    instrument_summary.pitch_prctiles = ...
+        pitch_prctiles(instrument_id, :);
+    required_instrument_string = strsplit(required_instrument, ' ');
+    required_instrument_string = required_instrument_string{1};
+    summary.(required_instrument_string) = instrument_summary;
 end
 
-[sorted_instrument_dist, sorting_indices] = ...
-    sort(mean_instrument_dist, 'ascend');
-
-sorted_mean_pitch_dist = mean_pitch_dist(sorting_indices);
-sorted_mean_style_dist = mean_style_dist(sorting_indices);
-sorted_mean_nuance_dist = mean_nuance_dist(sorting_indices);
-sorted_std_pitch_dist = std_pitch_dist(sorting_indices);
-sorted_std_style_dist = std_style_dist(sorting_indices);
-sorted_std_nuance_dist = std_nuance_dist(sorting_indices);
-
-sorted_instruments = cell(1, nInstruments);
-for instrument_id = 1:nInstruments
-    booleans = ...
-        find([features.instrument_id]==sorting_indices(instrument_id), 1);
-    sorted_instruments{instrument_id} = ...
-        features(booleans).instrument_name;
-end
-
-required_instruments = {'Clarinet', 'Flute', 'Trumpet', 'Violin', ...
-    'Tenor Saxophone', 'Piano'};
-
-required_booleans = false(nInstruments, 1);
-for instrument_id = 1:nInstruments
-    required_booleans(instrument_id) = ...
-        ismember(sorted_instruments{instrument_id}, required_instruments);
-end
-
-% Plot bar graph
-bar_matrix = cat(2, ...
-    sorted_instrument_dist(required_booleans), ...
-    sorted_mean_style_dist(required_booleans), ...
-    sorted_mean_nuance_dist(required_booleans), ...
-    sorted_mean_pitch_dist(required_booleans));
-
-h = barh(bar_matrix);
-legend(h, {'Same instrument', ...
-    'Same interpret', ...
-    'Same nuance', ...
-    'Same pitch'});
-set(gca,'yticklabel', required_instruments);
+save('ismir2016_fig1_data', 'summary')
 
 %%
-plot([sorted_instrument_dist,...
-    sorted_mean_pitch_dist, ...
-    sorted_mean_style_dist, ...
-    sorted_mean_nuance_dist]);
